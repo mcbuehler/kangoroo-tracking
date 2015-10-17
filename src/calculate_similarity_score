@@ -1,0 +1,23 @@
+function [x_n,y_n] = find_best_match(I_o,I_n,x_o,y_o)
+%% Finds best match for key point in new_frame
+% Not all key points are aligned. if the matching value is below a
+% threshold, it is discarded and the new coordinates are (0,0).
+% ------ INPUT ------
+% I_o : previous frame
+% I_n : subsequent frame
+% x_o,y_o : x and y coordinates of key point in old frame (I_o)
+%
+% ------ OUTPUT ------
+% x_n,y_n : coordinates of new key point in I_n
+
+% for now chosing windows size of 2
+neighbours = get_neighbourhood(x_o,y_o,2);
+matches =
+
+
+% for now (deubbing)
+x_n = x_o;
+y_n = y_o;
+    
+
+return
