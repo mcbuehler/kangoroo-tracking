@@ -20,7 +20,7 @@ threshold = 0.8;
 % for now chosing windows size of 2
 neighbours = get_neighbourhood(x_o,y_o,2);
 
-scores = calculate_similarity_score(I_o,I_n,neighbours(1),neighbours(2));
+scores = calculate_similarity_score(I_o,I_n,neighbours(:,1),neighbours(:,2));
 
 [max_score,index] = max(scores)
 
