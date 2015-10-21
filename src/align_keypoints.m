@@ -18,11 +18,17 @@ X_n = zeros(m,1);
 Y_n = zeros(m,1);
 
 % for all key points
-for i = 1 : m
-    [x_new, y_new] = find_best_match(I_o,I_n,X_o(i),Y_o(i),descriptors(:,i));
-    X_n(i) = x_new;
-    Y_n(i) = y_new;
-end
+% for i = 1 : m
+%     [x_new, y_new] = find_best_match(I_o,I_n,X_o(i),Y_o(i),descriptors(:,i));
+%     X_n(i) = x_new;
+%     Y_n(i) = y_new;
+% end
+
+% use vl_ubcmatch approach
+fc = [ X_n' ; Y_n'; ones(1,m) ; zeros(1,m) ] ;
+[~,descriptors_I2] = vl_sift(I_n,'frames',fc) ;
+[match,score] = vl_ubcmatch(descriptors,descriptors_I2)
+
 
 % remove invalid points
 valid = X_n ~= (ones(m,1) * -1);

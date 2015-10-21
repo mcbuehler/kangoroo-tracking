@@ -38,6 +38,7 @@ end
 % fc = [X';Y';ones(1,m) * 1; zeros(1,m) ] ;
 fc = [ X' ; Y'; ones(1,m) ; zeros(1,m) ] ;
 
+
 [~,descriptors_I2] = vl_sift(I2,'frames',fc) ;
 
 % features = preprocess_svm_input(descriptors_I1,descriptors_I2);
@@ -59,6 +60,12 @@ for i = 1 : m
     dis = double(dis);
     distances(i) = norm(dis);
 end
+
+% ---- vl_ubcmatch appoach ----
+[matches,score] = vl_ubcmatch(descriptor_I1,descriptors_I2)
+waitforbuttonpress
+
+
 % max_dis = max(distances);
 
 % normalize: convert to score between 0 and 1 (1 highest)

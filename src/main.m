@@ -1,7 +1,7 @@
 %% Object tracking algorithm
 clear all;
 
-debug_flag = 0;
+debug_flag = 1;
 debug_frames = 10;
 % organize code (NEW function to compute sift
 % test
@@ -14,10 +14,12 @@ files = dir(strcat(img_path, img_type));
 no_of_frames = length(files);
 image_size = size(imread(strcat(img_path,files(1).name)));
 frames = single(zeros(image_size(1),image_size(2),no_of_frames));
+originals = zeros(image_size(1),image_size(2),3,no_of_frames);
 for i = 1 : no_of_frames
     image = imread(strcat(img_path,files(i).name));
-    image = preprocess_image(image);
-    frames(:,:,i) = image;
+    originals(:,:,:,i) = image;
+    tmp_image = preprocess_image(image);
+    frames(:,:,i) = tmp_image;
     if debug_flag
         if i>debug_frames
             no_of_frames = i;
@@ -27,8 +29,11 @@ for i = 1 : no_of_frames
 end
 
 
-disp('> images loaded')
-
+% disp('> images loaded')
+% for i = 1 : no_of_frames
+%     imshow(originals(:,:,:,i))
+%     waitforbuttonpress
+% end
 % initialize objects
 
 object = struct('x','y','w','h');
