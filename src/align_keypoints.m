@@ -19,9 +19,16 @@ Y_n = zeros(m,1);
 
 % for all key points
 for i = 1 : m
-    [x_new, y_new] = find_best_match(I_o,I_n,X_o(i),Y_o(i),descriptors);
+    [x_new, y_new] = find_best_match(I_o,I_n,X_o(i),Y_o(i),descriptors(:,i));
     X_n(i) = x_new;
     Y_n(i) = y_new;
 end
 
+% subplot(1,2,2);
+% plot_tmp(I_n,X_n,Y_n)
+
+% X_n
+% sum(X_n == ones(m,1) * -1)
+% 
+% waitforbuttonpress
 return

@@ -15,18 +15,25 @@ x_n = -1;
 y_n = -1;
 
 % for now set threshold to certain value. will probably have to be adjusted
-threshold = 0.8;
+threshold = 0.9;
 
 % for now chosing windows size of 2
-neighbours = get_neighbourhood(x_o,y_o,2);
+neighbours = get_neighbourhood(x_o,y_o,10);
 
 scores = calculate_similarity_score(I_o,I_n,neighbours(:,1),neighbours(:,2),descriptors_Io);
 
-[max_score,index] = max(scores);
+% hist(scores)
+% waitforbuttonpress
 
-if max_score >= threshold
+[min_score,index] = min(scores);
+
+% plot_tmp(I_o,[x_o neighbours(index,1)],[y_o neighbours(index,2)])
+% waitforbuttonpress
+
+if min_score <= threshold
     x_n = neighbours(index,1);
     y_n = neighbours(index,2);
 end
+
 
 return
