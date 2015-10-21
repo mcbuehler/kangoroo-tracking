@@ -1,4 +1,4 @@
-function [X_n,Y_n] = align_keypoints(I_o,I_n,X_o,Y_o)
+function [X_n,Y_n] = align_keypoints(I_o,I_n,X_o,Y_o,descriptors)
 %% Finds matching key points in new_frame
 % Not all key points are aligned. if the matching value is below a
 % threshold, it is discarded and the new coordinates are (0,0).
@@ -17,8 +17,9 @@ m = len(X_o);
 X_n = zeros(m,1);
 Y_n = zeros(m,1);
 
+% for all key points
 for i = 1 : m
-    [x_new, y_new] = find_best_match(I_o,I_n,X_o(i),Y_o(i));
+    [x_new, y_new] = find_best_match(I_o,I_n,X_o(i),Y_o(i),descriptors);
     X_n(i) = x_new;
     Y_n(i) = y_new;
 end

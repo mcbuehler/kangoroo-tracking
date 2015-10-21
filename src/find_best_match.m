@@ -1,4 +1,4 @@
-function [x_n,y_n] = find_best_match(I_o,I_n,x_o,y_o)
+function [x_n,y_n] = find_best_match(I_o,I_n,x_o,y_o,descriptors_Io)
 %% Finds best match for key point in new_frame
 % Not all key points are aligned. if the matching value is below a
 % threshold, it is discarded and the new coordinates are (0,0).
@@ -20,7 +20,7 @@ threshold = 0.8;
 % for now chosing windows size of 2
 neighbours = get_neighbourhood(x_o,y_o,2);
 
-scores = calculate_similarity_score(I_o,I_n,neighbours(:,1),neighbours(:,2));
+scores = calculate_similarity_score(I_o,I_n,neighbours(:,1),neighbours(:,2),descriptors_Io);
 
 [max_score,index] = max(scores)
 
