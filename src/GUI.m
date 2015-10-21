@@ -152,7 +152,7 @@ setPreviewRect([]);
 
 %todo remove
 %load sample picture
-SetImage('E:\ippr\sample.jpg')%, handles.img);
+SetImage('image2.jpeg')%, handles.img);
 Redraw;
 
 

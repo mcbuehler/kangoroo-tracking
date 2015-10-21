@@ -1,5 +1,5 @@
-function [scores] = calculate_similarity_score(I1,I2,X,Y,descriptors_I1)
-%% Uses SVM to calculate similarity score between two points in two images
+function [scores] = calculate_similarity_score(I1,I2,X,Y,descriptor_I1)
+%% Finds point in X,Y that matches descriptor_I1 best
 % Score between 0 and 1
 % ------ INPUT ------
 % I1,I2 : images
@@ -21,17 +21,25 @@ if size(X) ~= size(Y) | size(X,2) ~= 1
     size(Y)
 end
     
-m = size(X,1);   
-
+% only take 200 out of the 400 points -> speedup
+ m = size(X,1);
+% 
+% % randomly pick 50
+% perm = randperm(size(X,1));
+% sel = perm(1,1:m);
+% X = X(sel);
+% Y = Y(sel);
 % ---- old approach ----
 % compute sift for all points (use vectorized method)
 % placeholder
 % already done for I1
 
 % use same scale as in find_keypoints (8/3)
-fc = [X';Y';ones(1,m) *8/3;ones(1,m) * 0] ;
+% fc = [X';Y';ones(1,m) * 1; zeros(1,m) ] ;
+fc = [ X' ; Y'; ones(1,m) ; zeros(1,m) ] ;
 
-[f,descriptors_I2] = vl_sift(I2,'frames',fc,'orientations') ;
+[~,descriptors_I2] = vl_sift(I2,'frames',fc) ;
+
 % features = preprocess_svm_input(descriptors_I1,descriptors_I2);
 % TODO: create and train svm and use svm to calculate scores. maybe create
 % svm only once when starting script (more efficient)
@@ -41,24 +49,23 @@ fc = [X';Y';ones(1,m) *8/3;ones(1,m) * 0] ;
 % have to check what soft_scores look like
 % scores = scores * soft_scores;
 % 
-% size(descriptors_I2)
-% size(descriptors_I1)
-descriptors_I2 = descriptors_I2';
-descriptors_I1 = descriptors_I1';
 
 % ---- euclidian distance approach ----
 
 % for all key points
-distances = zeros(1,m);
+distances = zeros(m,1);
 for i = 1 : m
-    dis = descriptors_I1(i,:) - descriptors_I2(i,:);
+    dis = descriptor_I1 - descriptors_I2(:,i);
     dis = double(dis);
     distances(i) = norm(dis);
 end
-max_dis = max(distances);
+% max_dis = max(distances);
 
 % normalize: convert to score between 0 and 1 (1 highest)
 % make sure that distance 0 is considered
-scores = distances.^(-1) / max_dis;
+% waitforbuttonpress
+% scores = distances.^(-1) / max_dis;
 
+% normalize
+scores = distances / max(distances);
 return

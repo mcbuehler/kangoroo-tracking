@@ -28,11 +28,11 @@ disp('> images loaded')
 % initialize objects
 
 object = struct('x','y','w','h');
-object.x = 0; object.y = 0; object.w = 100; object.h = 100;
+object.x = 213; object.y = 179; object.w = 66; object.h = 55;
 objects = [object];
 
 %stores all objects
-results = zeros(0,50,no_of_frames)
+results = zeros(0,50,no_of_frames);
 % for all frames:
 %   for all objects:
 %       find_keypoints
@@ -45,7 +45,8 @@ I_o = frames(:,:,1);
 for frame_i = 2 : no_of_frames
     fprintf('> processing frame %d \n',frame_i)
     I_n = frames(:,:,i);
-    for object_i = 1 : length(objects)
+    rectangles = ones(size(objects,2),4);
+    for object_i = 1 : size(objects,2)
         % for readability save variables tmp
         x = objects(object_i).x;
         y = objects(object_i).y;
@@ -54,13 +55,29 @@ for frame_i = 2 : no_of_frames
         [X_o,Y_o,descriptors] = find_keypoints(I_o,x,y,w,h);
         
         [X_n,Y_n] = align_keypoints(I_o,I_n,X_o,Y_o,descriptors);
+        
+        [x,y,w,h] = compute_rectangle(X_n,Y_n)
+        rectangles(object_i,:) = [x,y,w,h];
+        rectangles(object_i)
+        % plot(X_n,Y_n,'b*-','markersize',30,'markerfacecolor','red')
+        
+        objects(object_i).x = rectangles(object_i,1);
+        objects(object_i).y = rectangles(object_i,2);
+        objects(object_i).w = rectangles(object_i,3);
+        objects(object_i).h = rectangles(object_i,4);
+        objects(object_i)
+        waitforbuttonpress
     end
+    [x,y,w,h] = compute_rectangle(X_n,Y_n);
+    draw(I_n,x,y,w,h)
+    waitforbuttonpress
+    I_o = I_n;
+
     if debug_flag
         if frame_i > debug_frames
             break
         end
     end
-    
-    % draw...
+
 end
 
