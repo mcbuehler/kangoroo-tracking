@@ -22,7 +22,7 @@ neighbours = get_neighbourhood(x_o,y_o,2);
 
 scores = calculate_similarity_score(I_o,I_n,neighbours(:,1),neighbours(:,2),descriptors_Io);
 
-[max_score,index] = max(scores)
+[max_score,index] = max(scores);
 
 if max_score >= threshold
     x_n = neighbours(index,1);

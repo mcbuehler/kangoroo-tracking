@@ -13,7 +13,7 @@ function [X_n,Y_n] = align_keypoints(I_o,I_n,X_o,Y_o,descriptors)
 % ------ OUTPUT ------
 % X_n,Y_n : coordinates of new key points in I_n or -1,-1 for not aligned
 % key points
-m = len(X_o);
+m = length(X_o);
 X_n = zeros(m,1);
 Y_n = zeros(m,1);
 

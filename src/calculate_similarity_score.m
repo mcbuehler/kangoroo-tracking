@@ -10,10 +10,15 @@ function [scores] = calculate_similarity_score(I1,I2,X,Y,descriptors_I1)
 % single point, score only contains 1 value
 
 if size(I1) ~= size(I2)
-    disp('@calculate_similarity_score: Images are of different size')
+    disp('@calculate_similarity_score: Images are of different size:')
+    size(I1)
+    size(I2)
+    return
 end
-if size(X) ~= size(Y) | size(X,1) ~= 1
-    disp('@calculate_similarity_score: invalid input vectors')
+if size(X) ~= size(Y) | size(X,2) ~= 1
+    disp('@calculate_similarity_score: invalid input vectors:')
+    size(X)
+    size(Y)
 end
     
 m = size(X,1);   

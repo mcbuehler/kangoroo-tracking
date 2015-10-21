@@ -17,24 +17,16 @@ function [X,Y,descriptors] = find_keypoints(I,x,y,width,height)
 % 
 %%
 n = 50;
-
-% You have to return these variables:
-X = zeros(n,1);
-Y = zeros(n,1);
-
-% compute sift descriptors for image area using Gaussian variance s^2 - .25
-% (s is scale)
-binSize = 8 ;
-magnif = 3 ;
-[f,d] = vl_dsift(vl_imsmooth(I,sqrt((binSize/magnif)^2 - .25)),'bounds',[x y x+width y+height ],'norm');
+[f,d] = vl_dsift(I,'bounds',[x y x+width y+height ],'norm');
 
 % extract the n keypoints with highest contrast
 [f_sorted,sorted_i] = sort(f(3,:),'descend');
+
 biggest = sorted_i(1:50);
 
 % assign result vars
-X = f_sorted(1,biggest)';
-Y = f_sorted(2,biggest)';
-descriptors = d(:,biggest)
+X = f(1,biggest)';
+Y = f(2,biggest)';
+descriptors = d(:,biggest);
 
 return
