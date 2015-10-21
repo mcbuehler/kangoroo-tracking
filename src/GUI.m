@@ -303,7 +303,7 @@ locationStr = strcat( num2str(x) , ', ' ,num2str(y));
 txtSelection.String = strcat( txtSelection.String, '---', locationStr);
 
 %create and add rectangle to list
-newRect = CreateRect([x;getFirstX], [y; getFirstY]);
+newRect = compute_rectangle([x;getFirstX], [y; getFirstY]);
 AddRect(newRect(1),newRect(2),newRect(3),newRect(4));
 Redraw;
 
