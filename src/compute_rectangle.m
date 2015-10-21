@@ -11,8 +11,16 @@ function [x,y,width,height] = compute_rectangle(X,Y)
 % width,height: width and height of rectangle
 % 
 
-x = min(X);
-y = min(Y);
-width = max(X) - x + 1;
-height = max(Y) - y + 1;
+balance = 0.05;
+
+width = max(X) - min(X) + 1 
+height = max(Y) - min(Y) + 1 
+x = min(X) - balance*width;
+y = min(Y) - balance*height;
+
+width = width + 2*balance*width;
+
+height = height + 2*balance*height;
+
+area = width*height
 return

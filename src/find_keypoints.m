@@ -17,15 +17,17 @@ function [X,Y,descriptors] = find_keypoints(I,x,y,width,height)
 % 
 %%
 n = 50;
+bounds = [x y x+width y+height ]
 [f,d] = vl_dsift(I,'bounds',[x y x+width y+height ],'norm');
 
-if size(f,2) < 50
-    disp('not enough key points found. resetting n')
-    n = size(f,2)
+while size(f,2) < 50
+    disp('not enough key points found. making window bigger n')
+    x = x-width; y = y-height; width = 2*width; height = 2*height;
+    [f,d] = vl_dsift(I,'bounds',[x y x+width y+height],'norm');
 end
 
 % extract the n keypoints with highest contrast
-[f_sorted,sorted_i] = sort(f(3,:),'descend');
+% [f_sorted,sorted_i] = sort(f(3,:),'descend');
 
 % biggest = sorted_i(1:50);
 

@@ -18,7 +18,7 @@ y_n = -1;
 threshold = 0.9;
 
 % for now chosing windows size of 2
-neighbours = get_neighbourhood(x_o,y_o,10);
+neighbours = get_neighbourhood(x_o,y_o,6);
 
 scores = calculate_similarity_score(I_o,I_n,neighbours(:,1),neighbours(:,2),descriptors_Io);
 

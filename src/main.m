@@ -1,5 +1,7 @@
 %% Object tracking algorithm
-debug_flag = 1;
+clear all;
+
+debug_flag = 0;
 debug_frames = 10;
 % organize code (NEW function to compute sift
 % test
@@ -18,17 +20,19 @@ for i = 1 : no_of_frames
     frames(:,:,i) = image;
     if debug_flag
         if i>debug_frames
+            no_of_frames = i;
             break
         end
     end
 end
+
 
 disp('> images loaded')
 
 % initialize objects
 
 object = struct('x','y','w','h');
-object.x = 213; object.y = 179; object.w = 66; object.h = 55;
+object.x = 172; object.y = 200; object.w = 100; object.h = 50;
 objects = [object];
 
 %stores all objects
@@ -40,12 +44,13 @@ results = zeros(0,50,no_of_frames);
 %   draw
 
 disp('> objects initialized')
+imshow(frames(:,:,1))
+% waitforbuttonpress
 
-I_o = frames(:,:,1);
-for frame_i = 2 : no_of_frames
+for frame_i = 5 : no_of_frames
     fprintf('> processing frame %d \n',frame_i)
-    I_n = frames(:,:,i);
-    rectangles = ones(size(objects,2),4);
+    I_o = frames(:,:,frame_i-1);
+    I_n = frames(:,:,frame_i);
     for object_i = 1 : size(objects,2)
         % for readability save variables tmp
         x = objects(object_i).x;
@@ -55,23 +60,20 @@ for frame_i = 2 : no_of_frames
         [X_o,Y_o,descriptors] = find_keypoints(I_o,x,y,w,h);
         
         [X_n,Y_n] = align_keypoints(I_o,I_n,X_o,Y_o,descriptors);
+                
+        [x2,y2,w2,h2] = compute_rectangle(X_n,Y_n);
+        I_n = draw(I_n,[x x2],[y y2], [w w2], [h h2]);
+        plot_tmp(I_n,X_n,Y_n);
         
-        [x,y,w,h] = compute_rectangle(X_n,Y_n)
-        rectangles(object_i,:) = [x,y,w,h];
-        rectangles(object_i)
-        % plot(X_n,Y_n,'b*-','markersize',30,'markerfacecolor','red')
         
-        objects(object_i).x = rectangles(object_i,1);
-        objects(object_i).y = rectangles(object_i,2);
-        objects(object_i).w = rectangles(object_i,3);
-        objects(object_i).h = rectangles(object_i,4);
-        objects(object_i)
-        waitforbuttonpress
+        objects(object_i).x = x2;
+        objects(object_i).y = y2;
+        objects(object_i).w = w2;
+        objects(object_i).h = h2;
     end
-    [x,y,w,h] = compute_rectangle(X_n,Y_n);
-    draw(I_n,x,y,w,h)
-    waitforbuttonpress
-    I_o = I_n;
+%     [x,y,w,h] = compute_rectangle(X_n,Y_n);
+%     draw(I_n,x,y,w,h)
+%     waitforbuttonpress
 
     if debug_flag
         if frame_i > debug_frames

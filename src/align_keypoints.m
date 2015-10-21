@@ -24,6 +24,13 @@ for i = 1 : m
     Y_n(i) = y_new;
 end
 
+% remove invalid points
+valid = X_n ~= (ones(m,1) * -1);
+
+X_n = X_n(valid);
+Y_n = Y_n(valid);
+
+
 % subplot(1,2,2);
 % plot_tmp(I_n,X_n,Y_n)
 
