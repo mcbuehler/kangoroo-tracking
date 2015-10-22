@@ -25,7 +25,7 @@ function I = draw(I,X,Y,W,H)
 imshow(I)
 % waitforbuttonpress
 
-hold on
+hold off
 
 
 

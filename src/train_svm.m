@@ -8,9 +8,11 @@ function svm = train_svm()
 %
 %
 
-[sift_I1,sift_I2,Y] = get_training_set();
-features = preprocess_svm_input(sift_I1,sift_I2);
+[X,Y] = get_training_set();
 
-svm = fitcsvm(features,Y,'KernelFunction','rbf','Standardize',true,'ClassNames',[0,1]);
+svm = fitcsvm(X,Y,'KernelFunction','rbf','Standardize',true,'Kernelscale','auto');
+
+cvsvmmodel = crossval(svm);
+classloss = kfoldLoss(cvsvmmodel);
 
 return
