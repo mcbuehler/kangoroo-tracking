@@ -8,7 +8,7 @@ debug_frames = 20;
 % implement main
 
 % Load images
-img_path = strcat(pwd,'/../test_images/set3/');
+img_path = strcat(pwd,'/../test_images/set2/');
 img_type = '*.png';
 files = dir(strcat(img_path, img_type));
 no_of_frames = length(files);
@@ -40,13 +40,13 @@ object = struct('x','y','w','h');
 % imshow(frames(:,:,5))
 % waitforbuttonpress
 % testset1:
-%object.x = 174; object.y = 195; object.w = 90; object.h = 60;
+% object.x = 185; object.y = 151; object.w = 75; object.h = 47;
 
 % testset2:
-% object.x = 51; object.y = 216; object.w = 156; object.h = 184;
+object.x = 51; object.y = 216; object.w = 156; object.h = 184;
 
 % testset3:
-object.x = 99; object.y = 186; object.w = 100; object.h = 133;
+% object.x = 99; object.y = 186; object.w = 100; object.h = 133;
 
 objects = [object];
 %stores all objects

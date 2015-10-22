@@ -8,12 +8,12 @@ h1 = r_o(4);
 bounds = [x1 y1 x1+w1 y1+h1];
 [f1,d1] = vl_dsift(I1,'bounds',bounds,'norm');
 
-factor = 0.2;
+factor = 0.5;
 % make window bigger
 [x2, y2, w2, h2] = enlarge_rectangle(x1, y1, w1, h1, factor);
 
 draw(I2,[x1 x2],[y1 y2],[w1 w2],[h1 h2]);
-waitforbuttonpress
+% waitforbuttonpress
 
 bounds = [x2 y2 x2+w2 y2+h2];
 [f2,d2] = vl_dsift(I2,'bounds',bounds,'norm');
