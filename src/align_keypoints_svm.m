@@ -11,7 +11,7 @@ X_o = f1(1,:);
 Y_o = f1(2,:);
 
 % pick random 50
-m = size(X_o,2)
+m = size(X_o,2);
 random = randperm(m);
 sel = random(1:50);
 X_o = X_o(sel);

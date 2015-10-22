@@ -27,7 +27,7 @@ file = 'Child_no1__r_0_1&r_66676_2.scv.csv'; %'';ll
 image1 = '../datasets/child_no1/rgb/r-0-1.png';
 image2 = '../datasets/child_no1/rgb/r-66676-2.png';
 
-[X, Y] = file2Training_set(['../training/' file],image1,image2)
+[X, Y] = file2Training_set(['../training/' file],image1,image2);
 Features = [Features; X];
 Labels = [Labels; Y];
 
@@ -37,7 +37,7 @@ file = 'face_occ_5__r_0_1&r_200029_5.scv.csv';
 image1 = '../datasets/face_occ5/rgb/r-0-1.png';
 image2 = '../datasets/face_occ5/rgb/r-200029-5.png';
 
-[X, Y] = file2Training_set(['../training/' file],image1,image2)
+[X, Y] = file2Training_set(['../training/' file],image1,image2);
 Features = [Features; X];
 Labels = [Labels; Y];
 
@@ -47,7 +47,7 @@ file = 'face_occ_5__r_2933755_59&r_3533841_71.scv.csv';
 image1 = '../datasets/face_occ5/rgb/r-2933755-59.png';
 image2 = '../datasets/face_occ5/rgb/r-3533841-71.png';
 
-[X, Y] = file2Training_set(['../training/' file],image1,image2)
+[X, Y] = file2Training_set(['../training/' file],image1,image2);
 Features = [Features; X];
 Labels = [Labels; Y];
 

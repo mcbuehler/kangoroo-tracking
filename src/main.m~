@@ -1,7 +1,7 @@
 %% Object tracking algorithm
 clear all;
 
-debug_flag = 0;
+debug_flag = 1;
 debug_frames = 20;
 % organize code (NEW function to compute sift
 % test
@@ -33,8 +33,9 @@ start_image = 4;
 I_o = preprocess_image(imread(strcat(img_path,files(start_image).name)));
 for f_i = 5 : no_of_frames
     fprintf('> processing frame %d \n',f_i)
+    class(I_o)
     I_n = preprocess_image(imread(strcat(img_path,files(f_i).name)));
-    waitforbuttonpress
+    class(I_n)
     files(f_i).name
 
     for o_i = 1 : size(objects,2)
@@ -55,9 +56,9 @@ for f_i = 5 : no_of_frames
        [X_o,Y_o,X_n,Y_n] = align_keypoints_svm(svm,I_o,I_n,r_o);
         
         [x2,y2,w2,h2] = compute_rectangle(X_n,Y_n);
-        I = draw(I_n,[x x2],[y y2], [w w2], [h h2]);
+        I_n = draw(I_n,[x x2],[y y2], [w w2], [h h2]);
         
-        plot_tmp(I,X_n,Y_n);
+        plot_tmp(I_n,X_n,Y_n);
         
         
         objects(o_i).x = x2;
