@@ -8,7 +8,7 @@ debug_frames = 20;
 % implement main
 
 % Load images
-img_path = strcat(pwd,'/../test_images/set2/');
+img_path = strcat(pwd,'/../test_images/set3/');
 img_type = '*.png';
 files = dir(strcat(img_path, img_type));
 no_of_frames = length(files);
@@ -43,7 +43,10 @@ object = struct('x','y','w','h');
 %object.x = 174; object.y = 195; object.w = 90; object.h = 60;
 
 % testset2:
-object.x = 51; object.y = 216; object.w = 156; object.h = 184;
+% object.x = 51; object.y = 216; object.w = 156; object.h = 184;
+
+% testset3:
+object.x = 99; object.y = 186; object.w = 100; object.h = 133;
 
 objects = [object];
 %stores all objects
@@ -56,7 +59,7 @@ results = zeros(0,50,no_of_frames);
 
 disp('> objects initialized')
 
-for frame_i = 1 : no_of_frames
+for frame_i = 5 : no_of_frames
     fprintf('> processing frame %d \n',frame_i)
     I_o = frames(:,:,frame_i-1);
     I_n = frames(:,:,frame_i);
