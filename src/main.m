@@ -2,13 +2,13 @@
 clear all;
 
 debug_flag = 1;
-debug_frames = 10;
+debug_frames = 20;
 % organize code (NEW function to compute sift
 % test
 % implement main
 
 % Load images
-img_path = strcat(pwd,'/../test_images/set1/');
+img_path = strcat(pwd,'/../test_images/set2/');
 img_type = '*.png';
 files = dir(strcat(img_path, img_type));
 no_of_frames = length(files);
@@ -37,9 +37,15 @@ end
 % initialize objects
 
 object = struct('x','y','w','h');
-object.x = 172; object.y = 200; object.w = 100; object.h = 50;
-objects = [object];
+% imshow(frames(:,:,5))
+% waitforbuttonpress
+% testset1:
+%object.x = 174; object.y = 195; object.w = 90; object.h = 60;
 
+% testset2:
+object.x = 51; object.y = 216; object.w = 156; object.h = 184;
+
+objects = [object];
 %stores all objects
 results = zeros(0,50,no_of_frames);
 % for all frames:
@@ -49,10 +55,8 @@ results = zeros(0,50,no_of_frames);
 %   draw
 
 disp('> objects initialized')
-imshow(frames(:,:,1))
-% waitforbuttonpress
 
-for frame_i = 5 : no_of_frames
+for frame_i = 1 : no_of_frames
     fprintf('> processing frame %d \n',frame_i)
     I_o = frames(:,:,frame_i-1);
     I_n = frames(:,:,frame_i);
@@ -62,9 +66,12 @@ for frame_i = 5 : no_of_frames
         y = objects(object_i).y;
         w = objects(object_i).w;
         h = objects(object_i).h;
-        [X_o,Y_o,descriptors] = find_keypoints(I_o,x,y,w,h);
-        
-        [X_n,Y_n] = align_keypoints(I_o,I_n,X_o,Y_o,descriptors);
+        % ---- mode: keypoints
+%         [X_o,Y_o,d_o] = find_keypoints(I_o,x,y,w,h);
+%         [X_n,Y_n] = align_keypoints(I_o,I_n,X_o,Y_o,d_o);
+%       ---- mode: ubcmatch
+        r_o = [ x y w h];
+        [X_o,Y_o,X_n,Y_n] = align_keypoints_ubcmatch(I_o,I_n,r_o);
                 
         [x2,y2,w2,h2] = compute_rectangle(X_n,Y_n);
         I_n = draw(I_n,[x x2],[y y2], [w w2], [h h2]);

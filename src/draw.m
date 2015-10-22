@@ -1,4 +1,4 @@
-function I = draw(I,X,Y,Width,Height)
+function I = draw(I,X,Y,W,H)
 %% Draws image and rectanges that contain the tracked objects
 %
 % Leroy
@@ -9,13 +9,19 @@ function I = draw(I,X,Y,Width,Height)
 % Width,Height : column vectors with widths and heights of rectangles
 %
 % 
-for i = 1 : length(X)
-    x = X(i);
-    y = Y(i);
-    width = Width(i);
-    height = Height(i);
-    I = insertShape(I,'Rectangle', [x y width height], 'Color', 'r', 'LineWidth', 1); 
-end
+% for i = 1 : length(X)
+%     x = X(i);
+%     y = Y(i);
+%     width = Width(i);
+%     height = Height(i);
+%     I = insertShape(I,'Rectangle', [x y width height], 'Color', 'r', 'LineWidth', 1); 
+% end
+
+    I = insertShape(I,'Rectangle', [X(1) Y(1) W(1) H(1)], 'Color', 'r', 'LineWidth', 1);
+    
+    I = insertShape(I,'Rectangle', [X(2) Y(2) W(2) H(2)], 'Color', 'g', 'LineWidth', 1);
+
+
 imshow(I)
 % waitforbuttonpress
 

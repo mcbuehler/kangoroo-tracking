@@ -61,11 +61,6 @@ for i = 1 : m
     distances(i) = norm(dis);
 end
 
-% ---- vl_ubcmatch appoach ----
-[matches,score] = vl_ubcmatch(descriptor_I1,descriptors_I2)
-waitforbuttonpress
-
-
 % max_dis = max(distances);
 
 % normalize: convert to score between 0 and 1 (1 highest)
