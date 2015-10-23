@@ -3,7 +3,7 @@
 % --- mode options:
 % 1: match key points using svm
 % 2: use ubcmatch
-mode = 1
+mode = 2
 
 % Code from http://tracking.cs.princeton.edu/dataset.html
 setName = 'face_occ5';
@@ -29,18 +29,23 @@ rgb = imread(imageName);
 I_o = preprocess_image(rgb);
 % End code kangoroo-tracking group
 
- for frameId = 2:numOfFrames  
-	imageName = fullfile(directory,sprintf('rgb/r-%d-%d.png', frames.imageTimestamp(frameId), frames.imageFrameID(frameId)));  
-	rgb = imread(imageName);  
+for frameId = 2:numOfFrames  
+    imageName = fullfile(directory,sprintf('rgb/r-%d-%d.png', frames.imageTimestamp(frameId), frames.imageFrameID(frameId)));  
+    rgb = imread(imageName);  
     % ------------------------------
     % Start Code kangoroo-tracking group
     fprintf('> processing frame %d\n',frameId)
-	I_n = preprocess_image(rgb);
+    I_n = preprocess_image(rgb);
     % get new key points
-    [X_n,Y_n] = align_keypoints_svm(svm,I_o,I_n,bounds);
+
+    if mode == 1
+        [X_n,Y_n] = align_keypoints_svm(svm,I_o,I_n,bounds);
+    elseif mode == 2
+        [X_n,Y_n] = align_keypoints_ubcmatch(I_o,I_n,bounds);
+    end
     % compute new bounding box
     [x2,y2,w2,h2] = compute_rectangle(X_n,Y_n);
-% visualize result
+    % visualize result
     X = [bounds(1), x2]'; Y = [bounds(2), y2]'; W = [bounds(3), w2]'; H = [bounds(4), h2]';
 
     waitforbuttonpress
