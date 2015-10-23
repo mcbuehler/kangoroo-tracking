@@ -14,7 +14,4 @@ x = min(X);
 y = min(Y);
 w = max(X) - x + 1;
 h = max(Y) - y + 1;
-
-factor = 0.05;
-[x, y, w, h] = enlarge_rectangle(x, y, w, h, factor);
 return

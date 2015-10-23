@@ -3,7 +3,8 @@
 % --- mode options:
 % 1: match key points using svm
 % 2: use ubcmatch
-mode = 2
+% 3: match key points using euclidean distance
+mode = 3
 
 % Code from http://tracking.cs.princeton.edu/dataset.html
 setName = 'face_occ5';
@@ -24,7 +25,7 @@ XYZcam = zeros(480,640,4,numOfFrames);
 svm = train_svm();
 result = zeros(numOfFrames,4);
 bounds = load([directory 'init.txt']);
-imageName = fullfile(directory,sprintf('rgb/r-%d-%d.png', frames.imageTimestamp(frameId), frames.imageFrameID(frameId)));  
+imageName = fullfile(directory,sprintf('rgb/r-%d-%d.png', frames.imageTimestamp(1), frames.imageFrameID(1)));  
 rgb = imread(imageName);
 I_o = preprocess_image(rgb);
 % End code kangoroo-tracking group
@@ -42,6 +43,8 @@ for frameId = 2:numOfFrames
         [X_n,Y_n] = align_keypoints_svm(svm,I_o,I_n,bounds);
     elseif mode == 2
         [X_n,Y_n] = align_keypoints_ubcmatch(I_o,I_n,bounds);
+    elseif mode == 3
+        [X_n,Y_n] = align_keypoints_euclid(I_o,I_n,bounds);
     end
     % compute new bounding box
     [x2,y2,w2,h2] = compute_rectangle(X_n,Y_n);
