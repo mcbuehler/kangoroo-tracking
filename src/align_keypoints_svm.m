@@ -1,42 +1,50 @@
-function [ X_o, Y_o, X_n, Y_n ] = align_keypoints_svm(svm, I1,I2,r_o)
+function [ X_n, Y_n ] = align_keypoints_svm(svm, I1,I2,bounds)
+% we will be using m key points
+m = 50;
 
-% calculate old keypoints
-x1 = r_o(1);
-y1 = r_o(2);
-w1 = r_o(3);
-h1 = r_o(4);
-bounds = [x1 y1 x1+w1 y1+h1];
-[f1,d1] = vl_dsift(I1,'bounds',bounds,'norm');
-X_o = f1(1,:);
-Y_o = f1(2,:);
+% vl_dsift wants coordinates, not width and height
+rect = [bounds(1) bounds(2) bounds(1)+bounds(3) bounds(2)+bounds(4)];
+I1 = smoothen_image(I1);
+[f1,d1] = vl_dsift(I1,'bounds',rect,'norm','fast');
+numKeypointsFound = size(f1,2);
+if numKeypointsFound < m
+    fprintf('> Not enough key points found: only %d key points found.',numKeypointsFound)
+end
 
-% pick random 50
-m = size(X_o,2);
-random = randperm(m);
-sel = random(1:50);
-X_o = X_o(sel);
-Y_o = Y_o(sel);
-f1 = f1(1:2,sel);
-X_n = ones(50,1);
-Y_n = ones(50,1);
+% plot_tmp(I1,f1(1,:),f1(2,:));
+
+% get 50 points with most contrast. Approach failed because only a small
+% part of image was chosen because contrast was highest there
+% [~,index] = sortrows(f1',3);
+% index = index(length(index)-m:end)';
+
+% pick random key points
+perm = randperm(size(f1,2));
+index = perm(1:m);
 
 
+f1 = f1(:,index);
+d1 = d1(:,index);
 
-d1 = d1(:,sel);
-m = size(X_o,2);
+% plot_tmp(I1,f1(1,:),f1(2,:));
+
+X_o = f1(1,:)';
+X_n = zeros(m,1);
+Y_o = f1(2,:)';
+Y_n = zeros(m,1);
 %compute corresponding key point for each key point
 for i = 1 : m
-    nbs = get_neighbourhood(X_o(i),Y_o(i),6);
-    nbs_c = size(nbs,1);
+    nbs = get_neighbourhood(X_o(i),Y_o(i),3);
+    nbs_c = size(nbs,2);
     % compute sift for all neighbours
-    fc = [ nbs(:,1)' ; nbs(:,2)'; ones(1,nbs_c) ; zeros(1,nbs_c) ] ;
-    [~,nbs_d] = vl_sift(I2,'frames',fc) ;
-    % svm demands conversion to double
-    feat_vec = [ones(nbs_c,1)*double(d1(:,i)'), double(nbs_d)'];
-    [L,scores] = predict(svm,feat_vec);
-    [mx,m_i] = max(scores(:,2));
-    X_n(i) = nbs(m_i,1);
-    Y_n(i) = nbs(m_i,2);
+    fc = [ nbs(1,:) ; nbs(2,:); ones(1,nbs_c) ; zeros(1,nbs_c) ] ;
+    [nbs_f,nbs_d] = vl_sift(I2,'frames',fc,'orientations') ;
+    feat_vec = [ones(size(nbs_d,2),1)*double(d1(:,i)'), double(nbs_d)'];
+    [~,scores] = predict(svm,feat_vec);
+% get index where score for y=1 is max
+    [~,m_i] = max(scores(:,2));
+    X_n(i) = nbs_f(1,m_i);
+    Y_n(i) = nbs_f(2,m_i);
     
 end
 

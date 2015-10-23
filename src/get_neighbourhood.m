@@ -12,7 +12,7 @@ function [neighbouring_points] = get_neighbourhood(x,y,window_size)
 %       3 -> returns up to 49 points
 %
 % ------ OUTPUT ------
-% neighouring_points : nx2 matrix. first column: x values, second column: y
+% neighouring_points : 2xn matrix. first row: x values, second row: y
 % values of neighbouring points (including original point)
 
 X = [];
@@ -21,12 +21,12 @@ Y = [];
 for i = x - window_size : x + window_size
     for j = y - window_size : y + window_size
         if i > 0 && j > 0
-            X = [X; i];
-            Y = [Y; j];
+            X = [X, i];
+            Y = [Y, j];
         end
     end
 end
 
-neighbouring_points = [X, Y];
+neighbouring_points = [X; Y];
 
 return

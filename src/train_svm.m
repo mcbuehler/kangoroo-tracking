@@ -13,6 +13,6 @@ function svm = train_svm()
 svm = fitcsvm(X,Y,'KernelFunction','linear','Standardize',true,'Kernelscale','auto');
 
 cvsvmmodel = crossval(svm);
-classloss = kfoldLoss(cvsvmmodel)
+classloss = kfoldLoss(cvsvmmodel);
 
 end

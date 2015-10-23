@@ -1,0 +1,41 @@
+% ------------------------------
+% Code from http://tracking.cs.princeton.edu/dataset.html
+directory = '../evaluation/ptb/face_occ5/';
+load([directory 'frames']);  
+
+%K is [fx 0 cx; 0 fy cy; 0 0 1];  
+K = frames.K;  
+cx = K(1,3); cy = K(2,3);  
+fx = K(1,1); fy = K(2,2);  
+
+numOfFrames = frames.length;  
+imageNames = cell(1,numOfFrames*2);  
+XYZcam = zeros(480,640,4,numOfFrames);
+
+% Start Code kangoroo-tracking group
+svm = train_svm();
+result = zeros(NoOfFr,4);
+rectangles = zeros(no_of_frames,4);
+rectangles = load([directory 'init.txt']);
+bounds = [ rectangles(i,1) rectangles(i,2) rectangles(i,3) rectangles(i,4) ];
+imageName = fullfile(directory,sprintf('rgb/r-%d-%d.png', frames.imageTimestamp(frameId), frames.imageFrameID(frameId)));  
+rgb = imread(imageName);
+I_o = preprocess_image(rgb);
+% End code kangoroo-tracking group
+
+ for frameId = 2:numOfFrames  
+	imageName = fullfile(directory,sprintf('rgb/r-%d-%d.png', frames.imageTimestamp(frameId), frames.imageFrameID(frameId)));  
+	rgb = imread(imageName);  
+    % ------------------------------
+    % Start Code kangoroo-tracking group
+	I_n = preprocess_image(rgb);
+    % get new key points
+    [X_n,Y_n] = align_keypoints_svm(svm,I_o,I_n,bounds);
+    % compute new bounding box
+    [x2,y2,w2,h2] = compute_rectangle(X_n,Y_n);
+    % save result needed for ptb evaluation
+    result(frameId,:) = [x2, y2, w2, h2];
+    % reassign variables
+    I_o = I_n;
+    rectangles
+end  
