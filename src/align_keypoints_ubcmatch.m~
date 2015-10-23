@@ -7,12 +7,8 @@ rect = [bounds(1) bounds(2) bounds(1)+bounds(3) bounds(2)+bounds(4)];
 I1 = smoothen_image(I1);
 [f1,d1] = vl_dsift(I1,'bounds',rect);
 
-while size(f1,2) < m
-    disp('bigger now')
-    [x1 y1 w1 h1] = enlarge_rectangle(bounds(1), bounds(2), bounds(1)+bounds(3), bounds(2)+bounds(4), 0.1)
-    rect = [x1 y1 w1 h1];
-    [f1,d1] = vl_dsift(I1,'bounds',rect);
-end
+if size(f1,2) < m
+enlarge_rectangle(bounds(1), bounds(2), bounds(1)+bounds(3), bounds(2)+bounds(4), 0.01);
 
 perm = randperm(size(f1,2));
 index = perm(1:m);
