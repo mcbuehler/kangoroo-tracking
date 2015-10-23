@@ -10,9 +10,9 @@ function svm = train_svm()
 
 [X,Y] = get_training_set();
 
-svm = fitcsvm(X,Y,'KernelFunction','rbf','Standardize',true,'Kernelscale','auto');
+svm = fitcsvm(X,Y,'KernelFunction','linear','Standardize',true,'Kernelscale','auto');
 
 cvsvmmodel = crossval(svm);
-classloss = kfoldLoss(cvsvmmodel);
+classloss = kfoldLoss(cvsvmmodel)
 
-return
+end

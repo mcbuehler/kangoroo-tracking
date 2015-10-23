@@ -1,11 +1,14 @@
 %% Object tracking algorithm
 clear all;
 
+% --- mode ---
+% 1: matching keypoints with euclidean distance
+% 2: computing key points for both frames and using ubcmatch
+% 3: matching key points using svm
+mode = 3;
+
 debug_flag = 0;
-debug_frames = 20;
-% organize code (NEW function to compute sift
-% test
-% implement main
+debug_frames = 2;
 
 % Load images
 img_path = strcat(pwd,'/../test_images/set1/');
@@ -29,12 +32,22 @@ disp('> objects initialized')
 
 svm = train_svm;
 
-start_image = 4;
+% --- result:
+% 1: (only MOT) frameNr
+% 2: (only MOT) objectId
+% 3: X column vector
+% 4: Y column Vector
+% 5: W column VEctor
+% 6: H column vector
+result = zeros(no_of_frames,6);
+result(1,:) = [1, 1, objects(1).x, objects(1).y, objects(1).w, objects(1).h ];
+
+start_image = 1;
 I_o = preprocess_image(imread(strcat(img_path,files(start_image).name)));
-for f_i = 5 : no_of_frames
+for f_i = start_image+1 : no_of_frames
     fprintf('> processing frame %d \n',f_i)
     I_n = preprocess_image(imread(strcat(img_path,files(f_i).name)));
-    waitforbuttonpress
+%     waitforbuttonpress
     files(f_i).name
 
     for o_i = 1 : size(objects,2)
@@ -55,11 +68,11 @@ for f_i = 5 : no_of_frames
        [X_o,Y_o,X_n,Y_n] = align_keypoints_svm(svm,I_o,I_n,r_o);
         
         [x2,y2,w2,h2] = compute_rectangle(X_n,Y_n);
-        I = draw(I_n,[x x2],[y y2], [w w2], [h h2]);
+        result(f_i,:) = [f_i, o_i, x2, y2, w2, h2];
         
-        plot_tmp(I,X_n,Y_n);
+%         I = draw(I_n,[x x2],[y y2], [w w2], [h h2]);
         
-        
+%         plot_tmp(I,X_n,Y_n);
         objects(o_i).x = x2;
         objects(o_i).y = y2;
         objects(o_i).w = w2;
@@ -77,4 +90,6 @@ for f_i = 5 : no_of_frames
     I_o = I_n;
 
 end
-
+disp('> writing data')
+WritePrinceton('testset1',result(:,3),result(:,4),result(:,5),result(:,6));
+WriteMOT('testset1',result(:,1),result(:,2),result(:,3),result(:,4),result(:,5),result(:,6));
