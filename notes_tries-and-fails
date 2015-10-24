@@ -1,0 +1,18 @@
+Selecting most significant key points:
+- Picking the n key points with the highest contract did not work, as they only matched a very small area (jaw of a person).
+- selecting randomly n key points.
+
+
+Training SVM:
+- Using 2 128-sift vectors results with 99 training examples results in an error rate of ~0.35.
+- Using neighbourhood pixel values does not improve rate (~0.38)
+
+
+Problems:
+- bounding boxes gets smaller after every iteration. if it is slightly enlarged every time it loses ratio.
+
+
+Matching key points:
+- SVM: performs badly (theory: SVM not good enough)
+- ubcmatch: 
+- matching key point descriptors using minimun of euclidean distance: not working :(

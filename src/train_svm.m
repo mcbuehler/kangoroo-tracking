@@ -9,10 +9,27 @@ function svm = train_svm()
 %
 
 [X,Y] = get_training_set();
-
 svm = fitcsvm(X,Y,'KernelFunction','linear','Standardize',true,'Kernelscale','auto');
 
 cvsvmmodel = crossval(svm);
-classloss = kfoldLoss(cvsvmmodel)
+classloss = kfoldLoss(cvsvmmodel);
 
+
+% -- only for evaluation
+% l = size(Y,1);
+% r = []
+% steps = 1 : 4 : l;
+% for i = steps
+%     i
+%     svm = fitcsvm(X,Y,'KernelFunction','linear','Standardize',true,'Kernelscale','auto');
+% 
+%     cvsvmmodel = crossval(svm);
+%     classloss = kfoldLoss(cvsvmmodel);
+%     r = [r classloss];
+% end
+% 
+% plot(steps,r,'-r')
+% title('SVM training')
+% xlabel('# of training examples')
+% ylabel('classloss')
 end

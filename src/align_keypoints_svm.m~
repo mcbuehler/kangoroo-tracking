@@ -33,11 +33,11 @@ d1 = d1(:,index);
 disp('done. press button')
 waitforbuttonpress
 [x,y,w,h] = enlarge_rectangle(bounds(1),bounds(2),bounds(3),bounds(4),0.2);
-bounds = [x,y,w,h]; 
+bounds = [x,y,w,height]; 
 window = [x x+w y y+h]
 
 % imshow(I2)
-imshow(I2(int8(y):int8(y+h),int8(x):int8(x+w)))
+imshow(I2(int8(bounds(2)):int8(bounds(2)+bounds(4)),int8(bounds(1):bounds(1))+int8(bounds(3))))
 
 % end debuggin
 

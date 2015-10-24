@@ -4,7 +4,7 @@
 % 1: match key points using svm
 % 2: use ubcmatch
 % 3: match key points using euclidean distance
-mode = 3
+mode = 1;
 
 % Code from http://tracking.cs.princeton.edu/dataset.html
 setName = 'face_occ5';
@@ -51,8 +51,8 @@ for frameId = 2:numOfFrames
     % visualize result
     X = [bounds(1), x2]'; Y = [bounds(2), y2]'; W = [bounds(3), w2]'; H = [bounds(4), h2]';
 
-    waitforbuttonpress
-    draw(I_n,X,Y,W,H);
+%     waitforbuttonpress
+%     draw(I_n,X,Y,W,H);
 
     % save result needed for ptb evaluation
     result(frameId,:) = [x2, y2, w2, h2];
