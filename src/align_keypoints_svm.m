@@ -1,11 +1,7 @@
-function [ X_n, Y_n ] = align_keypoints_svm(svm, I1,I2,bounds)
+function [ X_n, Y_n ] = align_keypoints_svm(svm,I2,f1,d1,bounds)
 scale = @(m)ones(1,m)*0.7;
-% we will be using m key points
-m = 50;
 
-% computing new key points and descriptors in window. only get m points
-% back.
-[f1,d1] = get_dsift_in_bound(I1,bounds,m);
+m = size(f1,2);
 
 X_o = f1(1,:)';
 X_n = zeros(m,1);

@@ -6,6 +6,9 @@ setenv('DEBUG','1')
 % 3: match key points using euclidean distance
 mode = 1;
 
+% number of key points per frame
+m = 50;
+
 % Code from http://tracking.cs.princeton.edu/dataset.html
 setName = 'face_occ5';
 setName = 'child_no1';
@@ -40,7 +43,8 @@ for frameId = 2:numOfFrames
     % get new key points
 
     if mode == 1
-        [X_n,Y_n] = align_keypoints_svm(svm,I_o,I_n,bounds);
+        [f1,d1] = get_dsift_in_bound(I_o,bounds,m);
+        [X_n,Y_n] = align_keypoints_svm(svm,I_n,f1,d1,bounds);
     elseif mode == 2
         [X_n,Y_n] = align_keypoints_ubcmatch(I_o,I_n,bounds);
     elseif mode == 3
