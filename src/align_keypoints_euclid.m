@@ -34,11 +34,14 @@ for i = 1 : m
     end
     
     [dis,m_i] = min(norms);
-    if getenv('DEBUG')
-       fprintf('> minimal distance is %f\n',dis); 
-    end
+    debug('> minimal distance is %f\n',dis); 
+
     X2(i) = nbs_f(1,m_i);
     Y2(i) = nbs_f(2,m_i);
+    
+%     waitforbuttonpress
+%     plot_tmp(I2,[X1(i) X2(i)],[Y1(i) Y2(i)])
+%     waitforbuttonpress
     
 end
 

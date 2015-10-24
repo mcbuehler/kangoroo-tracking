@@ -1,22 +1,9 @@
-
-
-%this code is the Matlab implimentation of David G. Lowe, 
-%"Distinctive image features from scale-invariant keypoints,"
-%International Journal of Computer Vision, 60, 2 (2004), pp. 91-110.
-%this code should be used only for academic research.
-%any other useage of this code should not be allowed without Author agreement.
-% if you have any problem or improvement idea about this code, please
-% contact with Xing Di, Stevens Institution of Technology. xdi2@stevens.edu
-
-%function start
-%kp = getKeypoints(imread('E:\ippr\sample.jpg'));
-%getDescriptor(5,93,imread('E:\ippr\sample.jpg'))
- %getRect([1;3;2;4], [2;1;4;3])
-
- 
- function value = getKeypoints(imgOrigin,maxKeypoints)
+ function value = getKeypointsInBounds(I,bounds,maxKeypoints)
 %imgOrigin = imread('E:\ippr\sample.jpg');
 %%initial image
+
+imgOrigin = I(bounds(1):bounds(3),bounds(2):bounds(4));
+
 
 row=256; 
 colum=256; 
@@ -197,8 +184,12 @@ rx = scaleX*rx;
 ry = scaleY*ry;
 value = [rx;ry];
 
-figure ;
-imshow(imgOrigin)
-hold on
-plot(ry,rx, 'r+');
+% figure ;
+% imshow(imgOrigin)
+% hold on
+% plot(ry,rx, 'r+');
+% hold off
+
+value(1,:) = ones(1,size(value,2))*bounds(1) + value(1,:);
+value(2,:) = ones(1,size(value,2))*bounds(2) + value(2,:);
 
