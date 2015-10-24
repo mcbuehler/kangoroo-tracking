@@ -4,10 +4,10 @@ setenv('DEBUG','1')
 % 1: match key points using svm
 % 2: use ubcmatch
 % 3: match key points using euclidean distance
-mode = 1;
+mode = 3;
 
 % number of key points per frame
-m = 20;
+m = 10;
 
 % Code from http://tracking.cs.princeton.edu/dataset.html
 setName = 'face_occ5';
@@ -42,19 +42,18 @@ for frameId = 2:numOfFrames
     fprintf('> processing frame %d\n',frameId)
     I_n = preprocess_image(rgb);
     % get new key points
-
+    [f1,d1] = get_dsift_in_bound(I_o,bounds,m);
     if mode == 1
-        [f1,d1] = get_dsift_in_bound(I_o,bounds,m);
         [X_n,Y_n] = align_keypoints_svm(svm,I_n,f1,d1,bounds);
     elseif mode == 2
-        [X_n,Y_n] = align_keypoints_ubcmatch(I_o,I_n,bounds);
+        [X_n,Y_n] = align_keypoints_ubcmatch(I_n,f1,d1,bounds);
     elseif mode == 3
-        [X_n,Y_n] = align_keypoints_euclid(I_o,I_n,bounds);
+        [X_n,Y_n] = align_keypoints_euclid(I_n,f1,d1,bounds);
     end
     
     [x_vec,y_vec] = get_avg_movement(f1(1,:)',X_n,f1(2,:)',Y_n);
     if getenv('DEBUG') == '1'
-        fprintf('> moving rectangle x %f and y %f',x_vec,y_vec)
+        fprintf('> moving rectangle x %f and y %f\n',x_vec,y_vec)
     end
     x2 = bounds(1)+x_vec;
     y2 = bounds(2)+y_vec;

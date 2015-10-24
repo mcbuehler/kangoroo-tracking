@@ -1,5 +1,4 @@
 function [ X_n, Y_n ] = align_keypoints_svm(svm,I2,f1,d1,bounds)
-scale = @(m)ones(1,m)*0.7;
 
 m = size(f1,2);
 
