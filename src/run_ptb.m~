@@ -7,7 +7,7 @@ setenv('DEBUG','1')
 mode = 1;
 
 % number of key points per frame
-m = 20;
+m = 50;
 
 % Code from http://tracking.cs.princeton.edu/dataset.html
 setName = 'face_occ5';
@@ -27,7 +27,6 @@ XYZcam = zeros(480,640,4,numOfFrames);
 % Start Code kangoroo-tracking group
 svm = train_svm();
 result = zeros(numOfFrames,4);
-% format: x y w h
 bounds = load([directory 'init.txt']);
 imageName = fullfile(directory,sprintf('rgb/r-%d-%d.png', frames.imageTimestamp(1), frames.imageFrameID(1)));  
 rgb = imread(imageName);
@@ -53,18 +52,19 @@ for frameId = 2:numOfFrames
     end
     
     [x_vec,y_vec] = get_avg_movement(f1(1,:)',X_n,f1(2,:)',Y_n);
+    bounds = [
     if getenv('DEBUG') == '1'
         fprintf('> moving rectangle x %f and y %f',x_vec,y_vec)
     end
-    x2 = bounds(1)+x_vec;
-    y2 = bounds(2)+y_vec;
-    w2 = bounds(3);
-    h2 = bounds(4);
+    
     % compute new bounding box
 %     [x2,y2,w2,h2] = compute_rectangle(X_n,Y_n);
+    % visualize result
     X = [bounds(1), x2]'; Y = [bounds(2), y2]'; W = [bounds(3), w2]'; H = [bounds(4), h2]';
 
+%     waitforbuttonpress
     draw(I_n,X,Y,W,H);
+
     % save result needed for ptb evaluation
     result(frameId,:) = [x2, y2, w2, h2];
     % reassign variables

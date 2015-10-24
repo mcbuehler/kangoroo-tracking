@@ -10,9 +10,10 @@ Training SVM:
 
 Problems:
 - bounding boxes gets smaller after every iteration. if it is slightly enlarged every time it loses ratio.
+-> solution: simplification. computing motion vectors and not changing size of rectangle
 
 
 Matching key points:
-- SVM: performs badly (theory: SVM not good enough)
+- SVM: performs badly (assumption: SVM not good enough)
 - ubcmatch: 
 - matching key point descriptors using minimun of euclidean distance: not working :(
