@@ -1,5 +1,5 @@
 % ------------------------------
-
+setenv('DEBUG','1')
 % --- mode options:
 % 1: match key points using svm
 % 2: use ubcmatch
@@ -52,7 +52,7 @@ for frameId = 2:numOfFrames
     X = [bounds(1), x2]'; Y = [bounds(2), y2]'; W = [bounds(3), w2]'; H = [bounds(4), h2]';
 
 %     waitforbuttonpress
-%     draw(I_n,X,Y,W,H);
+    draw(I_n,X,Y,W,H);
 
     % save result needed for ptb evaluation
     result(frameId,:) = [x2, y2, w2, h2];

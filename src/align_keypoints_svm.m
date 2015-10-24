@@ -28,18 +28,16 @@ f1 = f1(:,index);
 d1 = d1(:,index);
 
 
+if getenv('DEBUG') == '1'
+    % only used for debugging:
+    disp('done. press button')
+    waitforbuttonpress
+    [x,y,w,h] = enlarge_rectangle(bounds(1),bounds(2),bounds(3),bounds(4),0.2);
+    bounds = [x,y,w,h]; 
+    window = [x x+w y y+h]
+% imshow(I2(int8(y):int8(y+h),int8(x):int8(x+w))); hold off;
+end
 
-% only used for debugging:
-disp('done. press button')
-waitforbuttonpress
-[x,y,w,h] = enlarge_rectangle(bounds(1),bounds(2),bounds(3),bounds(4),0.2);
-bounds = [x,y,w,h]; 
-window = [x x+w y y+h]
-
-% imshow(I2)
-imshow(I2(int8(y):int8(y+h),int8(x):int8(x+w)))
-
-% end debuggin
 
 X_o = f1(1,:)';
 X_n = zeros(m,1);
@@ -58,13 +56,13 @@ for i = 1 : m
     [~,m_i] = max(scores(:,2));
     X_n(i) = nbs_f(1,m_i);
     Y_n(i) = nbs_f(2,m_i);
-    
-    plot([X_o(i) X_n(i)], [Y_o(i) Y_n(i)],'-b'); hold on;
-    plot(X_o(i), Y_o(i),'r*'); 
-    plot(X_n(i), Y_n(i),'g*');
-    axis(window)  
-    hold off;
+%   
+    if getenv('DEBUG') == '1'
+        plot([X_o(i) X_n(i)], [Y_o(i) Y_n(i)],'-b'); hold on;
+        plot(X_o(i), Y_o(i),'r*'); 
+        plot(X_n(i), Y_n(i),'g*');
+        axis(window)
+        
+    end
 end
-
-
 end
