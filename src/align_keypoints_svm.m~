@@ -4,29 +4,7 @@ scale = @(m)ones(1,m)*0.7;
 m = 50;
 
 % vl_dsift wants coordinates, not width and height
-rect = [bounds(1) bounds(2) bounds(1)+bounds(3) bounds(2)+bounds(4)];
-I1 = smoothen_image(I1);
-[f1,d1] = vl_dsift(I1,'bounds',rect,'norm','fast');
-numKeypointsFound = size(f1,2);
-if numKeypointsFound < m
-    fprintf('> Not enough key points found: only %d key points found.',numKeypointsFound)
-end
-
-% plot_tmp(I1,f1(1,:),f1(2,:));
-
-% get 50 points with most contrast. Approach failed because only a small
-% part of image was chosen because contrast was highest there
-% [~,index] = sortrows(f1',3);
-% index = index(length(index)-m:end)';
-
-% pick random key points
-perm = randperm(size(f1,2));
-index = perm(1:m);
-
-
-f1 = f1(:,index);
-d1 = d1(:,index);
-
+[f1,d1] = get_dsift_in_bound(I1,boun
 
 if getenv('DEBUG') == '1'
     % only used for debugging:
@@ -62,7 +40,7 @@ for i = 1 : m
         plot(X_o(i), Y_o(i),'r*'); 
         plot(X_n(i), Y_n(i),'g*');
         axis(window)
-        [x_ve
+        
     end
 end
 end

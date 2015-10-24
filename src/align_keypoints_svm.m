@@ -3,41 +3,9 @@ scale = @(m)ones(1,m)*0.7;
 % we will be using m key points
 m = 50;
 
-% vl_dsift wants coordinates, not width and height
-rect = [bounds(1) bounds(2) bounds(1)+bounds(3) bounds(2)+bounds(4)];
-I1 = smoothen_image(I1);
-[f1,d1] = vl_dsift(I1,'bounds',rect,'norm','fast');
-numKeypointsFound = size(f1,2);
-if numKeypointsFound < m
-    fprintf('> Not enough key points found: only %d key points found.',numKeypointsFound)
-end
-
-% plot_tmp(I1,f1(1,:),f1(2,:));
-
-% get 50 points with most contrast. Approach failed because only a small
-% part of image was chosen because contrast was highest there
-% [~,index] = sortrows(f1',3);
-% index = index(length(index)-m:end)';
-
-% pick random key points
-perm = randperm(size(f1,2));
-index = perm(1:m);
-
-
-f1 = f1(:,index);
-d1 = d1(:,index);
-
-
-if getenv('DEBUG') == '1'
-    % only used for debugging:
-    disp('done. press button')
-    waitforbuttonpress
-    [x,y,w,h] = enlarge_rectangle(bounds(1),bounds(2),bounds(3),bounds(4),0.2);
-    bounds = [x,y,w,h]; 
-    window = [x x+w y y+h]
-% imshow(I2(int8(y):int8(y+h),int8(x):int8(x+w))); hold off;
-end
-
+% computing new key points and descriptors in window. only get m points
+% back.
+[f1,d1] = get_dsift_in_bound(I1,bounds,m);
 
 X_o = f1(1,:)';
 X_n = zeros(m,1);
@@ -61,8 +29,23 @@ for i = 1 : m
         plot([X_o(i) X_n(i)], [Y_o(i) Y_n(i)],'-b'); hold on;
         plot(X_o(i), Y_o(i),'r*'); 
         plot(X_n(i), Y_n(i),'g*');
-        axis(window)
         
     end
+end
+
+if getenv('DEBUG') == '1'
+    % only used for debugging:
+    xlabel('x'); ylabel('y');
+    title('Aligning key points')
+    legend('aligned points','previous key points','new new points');
+    [x,y,w,h] = enlarge_rectangle(bounds(1),bounds(2),bounds(3),bounds(4),0.2);
+    bounds = [x,y,w,h]; 
+    window = [x x+w y y+h]
+    axis(window)
+    axis equal
+    disp('done. press button')
+    waitforbuttonpress
+    hold off
+% imshow(I2(int8(y):int8(y+h),int8(x):int8(x+w))); hold off;
 end
 end
