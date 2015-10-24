@@ -22,7 +22,7 @@ Y2 = zeros(m,1);
 %compute corresponding key point for each key point
 for i = 1 : m
     debug('> processing neighbour %d\n',i);
-    nbs = get_neighbourhood(X1(i),Y1(i),3);
+    nbs = get_neighbourhood(X1(i),Y1(i),7);
     nbs_c = size(nbs,2);
     % compute sift for all neighbours
     fc = [ nbs(1,:) ; nbs(2,:); scale(nbs_c) ; zeros(1,nbs_c) ] ;
@@ -44,6 +44,7 @@ for i = 1 : m
 %     waitforbuttonpress
     
 end
-
+waitforbuttonpress
+plot_kp_directions(I2,X1,Y1,X2,Y2)
 
 end

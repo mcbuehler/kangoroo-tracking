@@ -12,7 +12,7 @@ I = smoothen_image(I);
 [f,d] = vl_dsift(I,'bounds',rect,'norm');
 numKeypointsFound = size(f,2);
 if numKeypointsFound < m
-    fprintf('> Not enough key points found: only %d key points found.',numKeypointsFound)
+    debug('> Not enough key points found: only %d key points found.',numKeypointsFound);
 end
 
 % plot_tmp(I1,f1(1,:),f1(2,:));

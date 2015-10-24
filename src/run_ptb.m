@@ -1,18 +1,20 @@
 % ------------------------------
 clear all;
-setenv('DEBUG','1')
+setenv('DEBUG','0')
 % --- mode options:
 % 1: match key points using svm
 % 2: use ubcmatch
 % 3: match key points using euclidean distance
-mode = 3;
+mode = 1;
+startFrameId = 1;
 
 % number of key points per frame considered for matching
-m = 100;
+m = 10;
 
 % Code from http://tracking.cs.princeton.edu/dataset.html
 setName = 'face_occ5';
 setName = 'child_no1';
+setName = 'zcup_move_1';
 directory = ['../evaluation/ptb/', setName, '/'];
 load([directory 'frames']);  
 
@@ -30,12 +32,17 @@ svm = train_svm();
 result = zeros(numOfFrames,4);
 % format: x y w h
 bounds = load([directory 'init.txt']);
-imageName = fullfile(directory,sprintf('rgb/r-%d-%d.png', frames.imageTimestamp(1), frames.imageFrameID(1)));  
+
+% starting at frame 7
+% bounds(1) = bounds(1)+47;
+
+
+imageName = fullfile(directory,sprintf('rgb/r-%d-%d.png', frames.imageTimestamp(startFrameId), frames.imageFrameID(startFrameId)));  
 rgb = imread(imageName);
 I_o = preprocess_image(rgb);
 % End code kangoroo-tracking group
 
-for frameId = 2:numOfFrames  
+for frameId = startFrameId:numOfFrames  
     imageName = fullfile(directory,sprintf('rgb/r-%d-%d.png', frames.imageTimestamp(frameId), frames.imageFrameID(frameId)));  
     rgb = imread(imageName);
     % ------------------------------
@@ -58,14 +65,14 @@ for frameId = 2:numOfFrames
     if getenv('DEBUG') == '1'
         fprintf('> moving rectangle x %f and y %f\n',x_vec,y_vec)
     end
-%     x2 = bounds(1)+x_vec;
-%     y2 = bounds(2)+y_vec;
-%     w2 = bounds(3);
-%     h2 = bounds(4);
+    x2 = bounds(1)+x_vec;
+    y2 = bounds(2)+y_vec;
+    w2 = bounds(3);
+    h2 = bounds(4);
     % compute new bounding box
-    [x2,y2,w2,h2] = compute_rectangle(X_n,Y_n);
+%     [x2,y2,w2,h2] = compute_rectangle(X_n,Y_n);
     X = [bounds(1), x2]'; Y = [bounds(2), y2]'; W = [bounds(3), w2]'; H = [bounds(4), h2]';
-    waitforbuttonpress
+%     waitforbuttonpress
     draw(I_n,X,Y,W,H);
     % save result needed for ptb evaluation
     result(frameId,:) = [x2, y2, w2, h2];
