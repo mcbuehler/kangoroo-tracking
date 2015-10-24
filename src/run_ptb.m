@@ -6,7 +6,7 @@ setenv('DEBUG','1')
 % 3: match key points using euclidean distance
 mode = 3;
 
-% number of key points per frame
+% number of key points per frame considered for matching
 m = 10;
 
 % Code from http://tracking.cs.princeton.edu/dataset.html
@@ -43,6 +43,8 @@ for frameId = 2:numOfFrames
     I_n = preprocess_image(rgb);
     % get new key points
     [f1,d1] = get_dsift_in_bound(I_o,bounds,m);
+    plot_tmp(I_o,f1(1,:),f1(2,:))
+    waitforbuttonpress
     if mode == 1
         [X_n,Y_n] = align_keypoints_svm(svm,I_n,f1,d1,bounds);
     elseif mode == 2
