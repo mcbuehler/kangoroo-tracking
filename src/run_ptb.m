@@ -5,7 +5,7 @@ setenv('DEBUG','0')
 % 1: match key points using svm
 % 2: use ubcmatch
 % 3: match key points using euclidean distance
-mode = 1;
+mode = 3;
 startFrameId = 1;
 
 % number of key points per frame considered for matching
@@ -14,7 +14,8 @@ m = 10;
 % Code from http://tracking.cs.princeton.edu/dataset.html
 setName = 'face_occ5';
 setName = 'child_no1';
-setName = 'zcup_move_1';
+% setName = 'zcup_move_1';
+setName = 'new_ex_occ4';
 directory = ['../evaluation/ptb/', setName, '/'];
 load([directory 'frames']);  
 

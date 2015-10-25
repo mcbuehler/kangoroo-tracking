@@ -5,7 +5,7 @@ function [ f,d ] = get_dsift_in_bound( I, bounds, m )
 % 1: get points with highest contrast
 % 2: get random points
 % 3: get points with highest contrast in segments of image
-mode = 3;
+mode = 2;
 
 rect = [bounds(1) bounds(2) bounds(1)+bounds(3) bounds(2)+bounds(4)];
 I = smoothen_image(I);
@@ -92,8 +92,8 @@ end
 
 
 
-% plot_tmp(I,f(1,:),f(2,:))
-% waitforbuttonpress
+plot_tmp(I,f(1,:),f(2,:))
+waitforbuttonpress
 
 end
 

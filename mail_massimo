@@ -1,0 +1,21 @@
+Dear Massimo,
+
+We are having some troubles concerning the performance of our object tracking implementation. This is what we did:
+
+We use the vl_feat library in order to find sift detectors and descriptors for the objects in the video. Then we faced the problem of how to select the most significant points among the detected key points. We first tried a random selection, but this did not perform very well. Then we ranked the points according to their contrast. This usually only returned points in a very small area of the picture. So we finally implemented another solution where we divide our window (the area of the image that contains the object) into smaller windows and calculate the key points with the highest contrast for every sub window.
+
+For the Matching we implemented another three methods: Matching sift descriptors for key points and their neighbours using an SVM or euclidean distance. The SVM is not working very well. We trained it with ~100 manually generated training examples where we selected key points and points in a close neighbourhood. Unfortunately this does not perform very well, the cross validated SVM has a classloss of ~0.35.
+We also tried calculating key points for both frames and matching the key points directly using the vl_ubcmatch() function. 
+
+Unfortunately, neither approach performs reasonably well. We usually lose the object after a couple of iterations. We tried adjusting several parameters, such as the number of key points considered or the size of the neighbourhood. We also implemented another method in order to find key points and sift descriptors. However, none of the methods described above is actually able to track an object in one of the 5 evaluation videos of the Princeton Tracking Benchmark.
+
+Do you have an idea, what else we could try in order to make our algorithm perform better? We would also be happy to talk to you in person if you have time.
+
+Thank you for your help.
+
+Kind regards,
+
+Alex, Leroy and Marcel
+
+PS: This is the link to our repository:
+https://github.com/mbbuehler/kangoroo-tracking/
