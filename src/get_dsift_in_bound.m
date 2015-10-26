@@ -8,6 +8,8 @@ function [ f,d ] = get_dsift_in_bound( I, bounds, m )
 mode = 2;
 
 rect = [bounds(1) bounds(2) bounds(1)+bounds(3) bounds(2)+bounds(4)];
+% [x,y,w,h] = enlarge_rectangle(bounds(1),bounds(2), bounds(1)+bounds(3), bounds(2)+bounds(4),-0.1);
+% rect = [x,y,w,h];
 I = smoothen_image(I);
 [f,d] = vl_dsift(I,'bounds',rect,'norm');
 numKeypointsFound = size(f,2);

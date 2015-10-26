@@ -66,6 +66,8 @@ h2 = vl_plotframe(f(:,sel)) ;
 set(h1,'color','k','linewidth',3) ;
 set(h2,'color','y','linewidth',2) ;
 I_o(155:165,325:335)
+hold off
+imshow(I_o); hold on
 h3 = vl_plotsiftdescriptor(d(:,sel),f(:,sel)) ;
 set(h3,'color','g') ;
 return 

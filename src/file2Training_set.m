@@ -1,12 +1,13 @@
 function [X Y] = file2Training_set(file,image1,image2)
-
+%% prepares training data in order to train SVM
 % mode options:
 % 1: using sift as features
 % 2: using pixel values in a neighbourhood
 % 3: using sift vector norm
-mode = 1;
+% 4: using difference of sift descriptors
+global file2Training_set_mode;
+mode = file2Training_set_mode;
 
-scale = @(m)ones(1,m)*0.7;
 I1 = imread(image1);
 I2 = imread(image2);
 I1 = im2single(rgb2gray(I1));
@@ -34,7 +35,8 @@ if mode == 1
 elseif mode == 2
     % way2: features using pixel values
     % get neighbourhood pixels
-    nbs_size = 3;
+    global neighbourhood_size
+    nbs_size = neighbourhood_size;
     X = [];
     for i = 1 : m
         nbs1 = get_neighbourhood(X1(i),Y1(i),nbs_size);
@@ -52,14 +54,19 @@ elseif mode == 3
     fc1 = [ X1' ; Y1';scale(m) ; zeros(1,m) ] ;
     [~,d1] = vl_sift(I1,'frames',fc1);
     fc2 = [ X2' ; Y2'; scale(m) ; zeros(1,m) ] ;
-    [f2,d2] = vl_sift(I2,'frames',fc2);
+    [~,d2] = vl_sift(I2,'frames',fc2);
     X = [];
     for i = 1 : m
         dis = norm(double(d1(:,i)-d2(:,i)));
         X = [X; dis];
     end
-    
-    
+elseif mode == 4
+    fc1 = [ X1' ; Y1';scale(m) ; zeros(1,m) ] ;
+    [~,d1] = vl_sift(I1,'frames',fc1);
+    fc2 = [ X2' ; Y2'; scale(m) ; zeros(1,m) ] ;
+    [~,d2] = vl_sift(I2,'frames',fc2);
+    feat = d1 - d2;
+    X = double(feat');
 else
    disp('invalid mode @file2Training_set'); 
 end
