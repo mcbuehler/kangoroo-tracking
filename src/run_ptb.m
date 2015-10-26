@@ -66,6 +66,12 @@ for frameId = startFrameId:numOfFrames
     if getenv('DEBUG') == '1'
         fprintf('> moving rectangle x %f and y %f\n',x_vec,y_vec)
     end
+    
+    input('> Press enter to continue')
+%     plot_kp_directions(I_n,f1(1,:)',f1(2,:)',X_n,Y_n);
+    plot_tmp(I_n,f1(1,:)',f1(2,:)',X_n,Y_n);
+    
+    
     x2 = bounds(1)+x_vec;
     y2 = bounds(2)+y_vec;
     w2 = bounds(3);
@@ -74,7 +80,7 @@ for frameId = startFrameId:numOfFrames
 %     [x2,y2,w2,h2] = compute_rectangle(X_n,Y_n);
     X = [bounds(1), x2]'; Y = [bounds(2), y2]'; W = [bounds(3), w2]'; H = [bounds(4), h2]';
 %     waitforbuttonpress
-    draw(I_n,X,Y,W,H);
+%     draw(I_n,X,Y,W,H);
     % save result needed for ptb evaluation
     result(frameId,:) = [x2, y2, w2, h2];
     % reassign variables

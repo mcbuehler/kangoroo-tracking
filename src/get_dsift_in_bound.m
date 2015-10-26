@@ -92,8 +92,8 @@ end
 
 
 
-plot_tmp(I,f(1,:),f(2,:))
-waitforbuttonpress
+% plot_tmp(I,f(1,:),f(2,:))
+% waitforbuttonpress
 
 end
 

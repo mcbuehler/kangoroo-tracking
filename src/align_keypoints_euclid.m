@@ -44,7 +44,7 @@ for i = 1 : m
 %     waitforbuttonpress
     
 end
-waitforbuttonpress
-plot_kp_directions(I2,X1,Y1,X2,Y2)
+% waitforbuttonpress
+% plot_kp_directions(I2,X1,Y1,X2,Y2)
 
 end
