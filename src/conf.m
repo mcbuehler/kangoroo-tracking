@@ -9,4 +9,4 @@ global file2Training_set_mode
 % 4: using difference of sift descriptors
 file2Training_set_mode = 4;
 
-setenv('DEBUG','0')
+setenv('DEBUG','1')

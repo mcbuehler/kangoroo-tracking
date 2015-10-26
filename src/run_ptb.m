@@ -69,8 +69,9 @@ for frameId = startFrameId:numOfFrames
     X_o_accepted = X_o(accepted)';
     Y_o_accepted = Y_o(accepted)';
     if length(X_n) < 1
-        disp('target lost. Aborting');
-        return
+        disp('target lost. Using old coordinates.');
+        X_n = X_o;
+        Y_n = Y_o;
     end
     [x_vec,y_vec] = get_avg_movement(X_o_accepted,X_n,Y_o_accepted,Y_n);
     
@@ -84,10 +85,9 @@ for frameId = startFrameId:numOfFrames
     
     if getenv('DEBUG') == '1'
         plot_tmp(I_n,X_o_accepted,Y_o_accepted,X_n,Y_n,bounds,rect2);
-        input('> Press enter to continue')
+        drawnow
     end
-    p = plot_tmp(I_n,X_o_accepted,Y_o_accepted,X_n,Y_n,bounds,rect2);
-    drawnow
+    
     result(frameId,:) = rect2;
     % reassign variables
     I_o = I_n;
