@@ -2,7 +2,7 @@
 %setenv('DEBUG','1')
 clear all;
 conf
-hold off
+%hold off
 % --- mode options:
 % 1: match key points using svm
 % 2: use ubcmatch
@@ -48,7 +48,7 @@ useCenterOfMatches = 0;
 
 % Code from http://tracking.cs.princeton.edu/dataset.html
 ptbPath = '../evaluation/ptb/'
-ptbPath = 'C:\Users\12400952\Downloads\EvaluationSet/'
+%ptbPath = 'C:\Users\12400952\Downloads\EvaluationSet/'
 
 setName = 'face_occ5';
 setName = 'child_no1';
@@ -66,7 +66,6 @@ setName = 'toy_no';%- fast
 
 directory = [ptbPath, setName, '/'];
 
-mode = 1;
 startFrameId = 1;
 
 % max number of key points per frame considered for matching
@@ -90,7 +89,6 @@ fx = K(1,1); fy = K(2,2);
 numOfFrames = frames.length;  
 imageNames = cell(1,numOfFrames*2);  
 
-XYZcam = zeros(480,640,4,numOfFrames);
 
 counter = 0;
 
@@ -323,7 +321,10 @@ if mode == 4
     end 
     
 else
-% XYZcam = zeros(480,640,4,numOfFrames);
+    
+    XYZcam = zeros(480,640,4,numOfFrames);
+
+    % XYZcam = zeros(480,640,4,numOfFrames);
 % 
 svm = train_svm();
 result = zeros(numOfFrames,4);
