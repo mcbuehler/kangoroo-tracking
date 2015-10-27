@@ -1,6 +1,7 @@
 Selecting most significant key points:
 - Picking the n key points with the highest contract did not work, as they only matched a very small area (jaw of a person).
 - selecting randomly n key points.
+- picking the n key points with highest contrast in secitons of image
 
 
 Training SVM:
@@ -17,3 +18,9 @@ Matching key points:
 - SVM: performs badly (assumption: SVM not good enough)
 - ubcmatch: 
 - matching key point descriptors using minimun of euclidean distance: not working :(
+
+Parameters:
+- m: number of key points used
+- neighbours: how many neighbours used (no general var yet)
+- modes (finding and matching)
+- for contrast mode how many sections

@@ -1,17 +1,23 @@
 % ------------------------------
-setenv('DEBUG','1')
+clear all;
+conf
+hold off
 % --- mode options:
 % 1: match key points using svm
 % 2: use ubcmatch
 % 3: match key points using euclidean distance
-mode = 1;
+mode = 3;
+startFrameId = 1;
 
-% number of key points per frame
-m = 50;
+% max number of key points per frame considered for matching
+m = 100;
 
-% Code from http://tracking.cs.princeton.edu/dataset.html
+% Dataset from Princeton Tracking Benchmark: http://tracking.cs.princeton.edu/dataset.html
 setName = 'face_occ5';
 setName = 'child_no1';
+setName = 'zcup_move_1';
+setName = 'bear_front';
+% setName = 'new_ex_occ4';
 directory = ['../evaluation/ptb/', setName, '/'];
 load([directory 'frames']);  
 
@@ -22,54 +28,72 @@ fx = K(1,1); fy = K(2,2);
 
 numOfFrames = frames.length;  
 imageNames = cell(1,numOfFrames*2);  
-XYZcam = zeros(480,640,4,numOfFrames);
-
-% Start Code kangoroo-tracking group
+% XYZcam = zeros(480,640,4,numOfFrames);
+% 
 svm = train_svm();
 result = zeros(numOfFrames,4);
+% format: x y w h
 bounds = load([directory 'init.txt']);
-imageName = fullfile(directory,sprintf('rgb/r-%d-%d.png', frames.imageTimestamp(1), frames.imageFrameID(1)));  
+
+imageName = fullfile(directory,sprintf('rgb/r-%d-%d.png', frames.imageTimestamp(startFrameId), frames.imageFrameID(startFrameId)));  
 rgb = imread(imageName);
 I_o = preprocess_image(rgb);
 % End code kangoroo-tracking group
 
-for frameId = 2:numOfFrames  
+for frameId = startFrameId:numOfFrames  
     imageName = fullfile(directory,sprintf('rgb/r-%d-%d.png', frames.imageTimestamp(frameId), frames.imageFrameID(frameId)));  
-    rgb = imread(imageName);  
+    rgb = imread(imageName);
     % ------------------------------
     % Start Code kangoroo-tracking group
     fprintf('> processing frame %d\n',frameId)
     I_n = preprocess_image(rgb);
-    % get new key points
 
+    % get new key points
+    [f1,d1] = get_dsift_in_bound(I_o,bounds,m);
+
+    X_o = f1(1,:);
+    Y_o = f1(2,:);
+    
     if mode == 1
-        [f1,d1] = get_dsift_in_bound(I_o,bounds,m);
         [X_n,Y_n] = align_keypoints_svm(svm,I_n,f1,d1,bounds);
     elseif mode == 2
-        [X_n,Y_n] = align_keypoints_ubcmatch(I_o,I_n,bounds);
+        [X_n,Y_n] = align_keypoints_ubcmatch(I_n,f1,d1,bounds);
     elseif mode == 3
-        [X_n,Y_n] = align_keypoints_euclid(I_o,I_n,bounds);
+        [X_n,Y_n] = align_keypoints_euclid(I_n,f1,d1,bounds);
     end
     
+    % Only extract aligned points
+    accepted = find(X_n)
+    X_n = X_n(accepted);
+    Y_n=Y_n(accepted);
+    X_o = X_o(accepted);
+    Y_o = Y_o(accepted);
+    f1 = [X_o;Y_o]; 
+    if length(X_n) < 1
+        disp('target lost. Aborting');
+        return
+    end
     [x_vec,y_vec] = get_avg_movement(f1(1,:)',X_n,f1(2,:)',Y_n);
-    bounds = [
-    if getenv('DEBUG') == '1'
-        fprintf('> moving rectangle x %f and y %f',x_vec,y_vec)
-    end
     
-    % compute new bounding box
-%     [x2,y2,w2,h2] = compute_rectangle(X_n,Y_n);
-    % visualize result
-    X = [bounds(1), x2]'; Y = [bounds(2), y2]'; W = [bounds(3), w2]'; H = [bounds(4), h2]';
+    debug('> moving rectangle x %f and y %f\n',x_vec,y_vec);
+    
+    input('> Press enter to continue')    
+    
+    x2 = bounds(1)+x_vec;
+    y2 = bounds(2)+y_vec;
+    w2 = bounds(3);
+    h2 = bounds(4);
+    rect2 = [x2, y2, w2, h2];
+%     rect2 = center_rectangle(X_n,Y_n,bounds(3),bounds(4));
+%     rect2(1) = rect(2)+x_vec
 
-%     waitforbuttonpress
-    draw(I_n,X,Y,W,H);
+    plot_tmp(I_n,f1(1,:)',f1(2,:)',X_n,Y_n,bounds,rect2);
+    
 
-    % save result needed for ptb evaluation
-    result(frameId,:) = [x2, y2, w2, h2];
+    result(frameId,:) = rect2;
     % reassign variables
     I_o = I_n;
-    bounds = [x2, y2, w2, h2];
+    bounds = rect2;
 
 end  
 disp('> writing data')

@@ -12,7 +12,9 @@
 %kp = getKeypoints(imread('E:\ippr\sample.jpg'));
 %getDescriptor(5,93,imread('E:\ippr\sample.jpg'))
  %getRect([1;3;2;4], [2;1;4;3])
+
  
+<<<<<<< HEAD
  %function value = getKeypoints(imgOrigin)
 imgOrigin = imread('E:\ippr\sample.jpg');
 debug = 0;
@@ -24,6 +26,12 @@ debug = 0;
 
 maxKeypoints = 100000;
 
+=======
+ function value = getKeypoints(imgOrigin,maxKeypoints)
+%imgOrigin = imread('E:\ippr\sample.jpg');
+%%initial image
+
+>>>>>>> c5654d5b9acc2ab85ea6a6b31945ae3ac3f27ad7
 row=256; 
 colum=256; 
 
@@ -31,7 +39,7 @@ scaleX = size(imgOrigin,1) / colum;
 scaleY = size(imgOrigin,2) / row;
 
 img=imresize(imgOrigin,[row,colum]);
-img=rgb2gray(img);
+% img=rgb2gray(img);
 % img=histeq(img);
 img=im2double(img);
 origin=img; % used for plotting
