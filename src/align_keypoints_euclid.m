@@ -23,7 +23,7 @@ Y2 = zeros(m,1);
 for i = 1 : m
     debug('> processing neighbour %d\n',i);
     nbs = get_neighbourhood(X1(i),Y1(i),3);
-    nbs_c = size(nbs,2);
+    nbs_c = size(nbs,2)
     % compute sift for all neighbours
     fc = [ nbs(1,:) ; nbs(2,:); scale(nbs_c) ; zeros(1,nbs_c) ] ;
     [nbs_f,nbs_d] = vl_sift(I2,'frames',fc,'orientations') ;

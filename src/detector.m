@@ -11,18 +11,14 @@
 %function start
 %kp = getKeypoints(imread('E:\ippr\sample.jpg'));
 %getDescriptor(5,93,imread('E:\ippr\sample.jpg'))
- %getRect([1;3;2;4], [2;1;4;3])
- 
+
  %function value = getKeypoints(imgOrigin)
-imgOrigin = imread('E:\ippr\sample.jpg');
-debug = 0;
- %imgOrigin = imgOrigin(186:344,243:295,:);
-
-% waitforbuttonpress
+%imgOrigin = imread('E:\ippr\sample.jpg');
 %%initial image
+function [X,Y] = detector(imgOrigin, maxKeypoints)
+%imgOrigin = imread('C:\Users\12400952\Desktop\test.png');
 
-
-maxKeypoints = 100000;
+%maxKeypoints = 500;
 
 row=256; 
 colum=256; 
@@ -30,10 +26,11 @@ colum=256;
 scaleX = size(imgOrigin,1) / colum;
 scaleY = size(imgOrigin,2) / row;
 
+
 img=imresize(imgOrigin,[row,colum]);
-img=rgb2gray(img);
+%img=rgb2gray(img);
 % img=histeq(img);
-img=im2double(img);
+%img=im2double(img);
 origin=img; % used for plotting
 % img=medfilt2(img);
 
@@ -51,16 +48,9 @@ end
 % first image in first octave is created by interpolating the original one.
 temp_img=kron(img,ones(2));
 temp_img=padarray(temp_img,[1,1],'replicate');
-%create the DoG pyramid.    
-if debug == 1
-    disp('Create DoG pyramid');
-end
-
+%create the DoG pyramid.
 for i=1:octave
     temp_D=D{i};
-    if debug == 1
-        disp(strcat(int2str(i*100/octave),'%'));
-    end
     for j=1:level
         scale=sigma0*sqrt(2)^(1/level)^((i-1)*level+j);
         f=fspecial('gaussian',[1,floor(6*scale)],scale);
@@ -119,7 +109,6 @@ for i=1:octave
             end
         end
     end
-    
 end
 idx= extrema==0;
 extrema(idx)=[];
@@ -207,12 +196,12 @@ rx=floor(x./2.^(octave-1-extrema(1:4:end)));
 
 %plot original img with keypoints
 
-rx = scaleX*rx;
-ry = scaleY*ry;
-value = [rx;ry]
-
-figure ;
-imshow(imgOrigin)
-hold on
-plot(ry,rx, 'r+');
-
+X = scaleX*rx;
+Y = scaleY*ry;
+%[X,Y] = [rx ry];
+% 
+% figure ;
+% imshow(imgOrigin)
+% hold on
+% plot(ry,rx, 'r+');
+% 
