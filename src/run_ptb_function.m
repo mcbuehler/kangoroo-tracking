@@ -1,5 +1,9 @@
+function [] = run_ptb_function(setName, mode, plot_level, stopFrame)
 
-clear all;
+if stopFrame == 0
+    stopFrame = inf;
+end
+
 % load global conf variables
 conf
 
@@ -7,16 +11,16 @@ conf
 % 0: do not plot (used for writing output file)
 % 1: plot old and new recangles
 % 2: plot rectangles and key points
-plot_level = 2;
+% plot_level = 2;
 
 % stop after n frames. set to inf if you do not want to stop it
 % automatically.
-stopFrame = inf;
+% stopFrame = inf;
 
 % --- mode options:
 % 4: compute key points for both frames and match them using euclid
 % 5: compute key points for both frames and match them using SVM
-mode = 5;
+% mode = 5;
 
 % parameters used for both methods (euclid and svm matching)
 startFrameId = 1;
@@ -24,8 +28,8 @@ ptbPath = '../evaluation/ptb/';
 % ptbPath = 'C:\Users\12400952\Downloads\EvaluationSet/'
 
 % Datasets from Princeton Tracking Benchmark: http://tracking.cs.princeton.edu/dataset.html
-setName = 'face_occ5';
-setName = 'child_no1';
+% setName = 'face_occ5';
+% setName = 'child_no1';
 %setName = 'new_ex_occ4';
 %setName = 'basketball1';
 %setName = 'child_no2';

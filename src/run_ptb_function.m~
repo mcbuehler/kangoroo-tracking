@@ -1,4 +1,4 @@
-
+function [] = run_ptb_function(setName, mode, plot
 clear all;
 % load global conf variables
 conf
