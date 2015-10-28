@@ -1,15 +1,20 @@
 function [] = run_ptb_function(setName, mode, plot_level, stopFrame)
 
+debug('> chosen video: %s\n',setName);
+debug('> matching mode: %d\n',mode);
+debug('> plot level: %d\n',plot_level);
+debug('> stopFrame: %d\n',stopFrame);
 plot_level = int8(plot_level);
+stopFrame = int8(stopFrame);
 % stop after n frames. set to inf if you do not want to stop it
 % automatically.
 % default value: stopFrame = inf;
 if stopFrame == 0
     stopFrame = inf;
 end
-
+f = figure;
 % load global conf variables
-conf
+conf;
 
 % plotting level
 % 0: do not plot (used for writing output file)
@@ -239,8 +244,8 @@ if mode == 4
         end
         
         if TERMINATE
-            fprintf('> Exiting...');
             TERMINATE = 0;
+            clf(f);
             return
         end
     end
@@ -269,6 +274,7 @@ elseif mode == 5
         fprintf('---\n> processing frame %d\n',frameId)
         I_n = preprocess_image(rgb);
         
+        debug('> Searching for key points...\n',[]);
         % get new key point candidates
         [f1,d1] = get_dsift_in_bound(I_o,bounds,m,4);
         
@@ -276,6 +282,8 @@ elseif mode == 5
         % a vector with old X values for points. Same for Y_o.
         X_o = f1(1,:);
         Y_o = f1(2,:);
+        
+        debug('> Aligning key points...\n',[]);
         
         % Aligning old and new key points. not all points will be aligned
         % (criterium: contrast)
@@ -329,8 +337,9 @@ elseif mode == 5
         bounds = rect2;
         
         if TERMINATE
-            fprintf('> Exiting...');
             TERMINATE = 0;
+            clf(f);
+            hold off;
             return
         end
     end

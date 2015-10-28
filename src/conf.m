@@ -2,8 +2,6 @@
 global ptbPath 
 %path to the directory containing the video folders
 
-global setName
-%name of the folder containing the video's image files
 
 global neighbourhood_size
 
@@ -106,7 +104,6 @@ matching_mode = 4;
 
 %parameters - accuracy
 %make sure that enough keypoints remain!
-maxKeypoints = 500;
 boundExpander = 20;
 discardWrongMovements = 1;
 discardNonMovingPoints = 0;
@@ -136,7 +133,7 @@ ptbPath = '../evaluation/ptb/';
 %setName = 'wdog_no1';%-
 %setName = 'wr_no';
 %setName = 'two_book';
-%setName = 'walking_no_occ'; %-
+%setName = 'walking_no_occ';
 
 setenv('DEBUG','1')
 

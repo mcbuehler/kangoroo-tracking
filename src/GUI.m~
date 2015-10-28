@@ -73,7 +73,7 @@ function GUI_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for GUI
 handles.output = hObject;
-conf
+
 % Update handles structure
 guidata(hObject, handles);
 
@@ -93,6 +93,7 @@ guidata(hObject, handles);
 handles = guidata(hObject);
 handles.popMatching.String = {'SVM';'Euclidian Distance'};
 handles.popDisplay.String = {'Show rectangles';'Show rectangles and key points'};
+
 global ptbPath
 
 %get folders
@@ -106,8 +107,11 @@ handles.popVideo.String = {folder.name} ;
 
 
 function Run(handles)
-videoname = handles.popVideo.String{handles.popVideo.Value};
 
+videoname = handles.popVideo.UserData
+
+class(videoname)
+handles.popVideo.Stringhandles.popVideo.
 matching_flag = handles.popMatching.Value;
 
 switch matching_flag
@@ -120,7 +124,7 @@ end
 stop = int8(handles.checkStop.Value);
 plotLevel = int8(handles.popDisplay.Value);
 
-run_ptb_function(videoname,matching, plotLevel, stop);
+run_ptb_function(videoname,matching, stop, plotLevel);
 
 
 % --- Executes on button press in btnStart.
@@ -191,7 +195,6 @@ function stopBtn_Callback(hObject, eventdata, handles)
 % hObject    handle to stopBtn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-disp('> Stop pressed. Exiting...\n');
 global TERMINATE
 TERMINATE = 1;
 % --- Outputs from this function are returned to the command line.
@@ -204,43 +207,3 @@ function varargout = GUI_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
-function popVideo_Callback(hObject, eventdata, handles)
-% hObject    handle to popVideo (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: contents = cellstr(get(hObject,'String')) returns popVideo contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from popVideo
-
-function popMatching_Callback(hObject, eventdata, handles)
-% hObject    handle to popMatching (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: contents = cellstr(get(hObject,'String')) returns popMatching contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from popMatching
-
-% --- Executes during object creation, after setting all properties.
-function popVideo_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to popVideo (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: popupmenu controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% --- Executes during object creation, after setting all properties.
-function popMatching_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to popMatching (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: popupmenu controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
