@@ -1,14 +1,13 @@
+function value =  run_ptb(action)
+% 1 = initialize
+% 2 = 
 % ------------------------------
 %setenv('DEBUG','1')
 clear all;
 conf
 %hold off
 % --- mode options:
-% 1: match key points using svm
-% 2: use ubcmatch
-% 3: match key points using euclidean distance
 
-mode = 4;
 
 %todo
 %gui
@@ -19,61 +18,19 @@ mode = 4;
 %more kp, lower Threshold(->higher expander?)
 %direction with count of movementvectors
 
+
 % parameter 
-m = 1000;%number of keypoints chosen - set high due to bad selection
-boundExpander = 70;
-discardNonMovingPoints = 0;
-moveThreshold = 5;
-discardWrongMovements = 1;
-stopEveryXImage = 0; 
-euclidThreshold = 100;
-useGUI = 0; %not implemented
-plotKeypoints =0;
-startFrameId = 1;
+mode = matching_mode;
+m = maxKeypoints;
 
-
-%matching modes within modes 4
-%standard: compute movement vectors and apply them to objRect
-
- % uses detector by David G. Lowe
+%delete
 useLoweSift = 0;
-
- %move objRect to mean location of matches
- %needs discardNonMovingPoints == 1 and discardWrongMovements == 0
 useMeanLocation = 0;
+useCenterOfMatches =0;
 
-%%move center of objRect to center of matches
-useCenterOfMatches = 0;
-
-
-
-% Code from http://tracking.cs.princeton.edu/dataset.html
-ptbPath = '../evaluation/ptb/'
-ptbPath = 'C:\Users\12400952\Downloads\EvaluationSet/'
-
-setName = 'face_occ5';
-setName = 'child_no1';
-%setName = 'new_ex_occ4';
-%setName = 'basketball1';
-%setName = 'child_no2';
-%setName = 'computerbar1';
-%setName = 'toy_yellow_no';%-
-%setName = 'toy_no_occ';
-setName = 'toy_no';%- fast
-%setName = 'wdog_no1';%-
-%setName = 'wr_no';
-%setName = 'two_book';
-%setName = 'walking_no_occ'; %-
-
+%load imagepaths
 directory = [ptbPath, setName, '/'];
 
-
-% Dataset from Princeton Tracking Benchmark: http://tracking.cs.princeton.edu/dataset.html
-% setName = 'face_occ5';
-% setName = 'child_no1';
-% setName = 'zcup_move_1';
-% setName = 'bear_front';
-% setName = 'new_ex_occ4';
 
 load([directory 'frames']);  
 
@@ -282,9 +239,11 @@ if mode == 4
                 %display rect
     
                 if plotKeypoints == 1
-                    plot_tmp(img,X_n,Y_n);
+                    plot_tmp(img,X_o, Y_o,X_n,Y_n, objRect, [x2, y2, w2, h2]);
+                else
+                    draw(rgb,X,Y,W,H);
                 end
-                 draw(rgb,X,Y,W,H);
+              
                 %wait
                 %waitforbuttonpress
                 counter = counter + 1;

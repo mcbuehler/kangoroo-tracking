@@ -41,7 +41,7 @@ function varargout = GUI(varargin)
 
 % Edit the above text to modify the response to help GUI
 
-% Last Modified by GUIDE v2.5 20-Oct-2015 19:26:37
+% Last Modified by GUIDE v2.5 28-Oct-2015 20:15:51
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -147,14 +147,18 @@ guidata(hObject, handles);
 % uiwait(handles.figure1);
 
 %initialize rects
-setCurrentRects([]);
-setPreviewRect([]);
+% setCurrentRects([]);
+% setPreviewRect([]);
 
-%todo remove
 %load sample picture
-SetImage('image2.jpeg')%, handles.img);
-Redraw;
+% SetImage('image2.jpeg')%, handles.img);
+% Redraw;
 
+%populate popup boxes
+
+handles.popMatching = {'SVM';'Euclidian Distance'};
+handles.popDisplay = {'Show rectangles';'Show rectangles and key points'};
+handles.popVideo = {'todo'};
 
 function Run
 if size(getCurrentRects,2) == 0
@@ -404,3 +408,104 @@ function btnStart_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 Run;
+
+
+% --- Executes on selection change in popVideo.
+function popVideo_Callback(hObject, eventdata, handles)
+% hObject    handle to popVideo (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popVideo contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popVideo
+
+
+% --- Executes during object creation, after setting all properties.
+function popVideo_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to popVideo (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in popMatching.
+function popMatching_Callback(hObject, eventdata, handles)
+% hObject    handle to popMatching (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popMatching contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popMatching
+
+
+% --- Executes during object creation, after setting all properties.
+function popMatching_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to popMatching (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in popDisplay.
+function popDisplay_Callback(hObject, eventdata, handles)
+% hObject    handle to popDisplay (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popDisplay contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popDisplay
+
+
+% --- Executes during object creation, after setting all properties.
+function popDisplay_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to popDisplay (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function edit1_Callback(hObject, eventdata, handles)
+% hObject    handle to edit1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit1 as text
+%        str2double(get(hObject,'String')) returns contents of edit1 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in checkStop.
+function checkStop_Callback(hObject, eventdata, handles)
+% hObject    handle to checkStop (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkStop
