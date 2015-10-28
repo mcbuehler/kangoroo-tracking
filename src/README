@@ -1,9 +1,0 @@
---- README ---
-
-This object tracking algorithm uses different methods for finding key points and matching them. The methods implemented and how to use them is described here.
-
-1. Step: Finding key points
-
-
-
-2. Step: Matching

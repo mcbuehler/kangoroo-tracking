@@ -1,21 +1,4 @@
-%getrect(X,Y)
-%drawRecht
-%output as DSIFT
-
-
-%TODO
-%implement folder selection
-%-for video files -> VideoReader(filename),while hasFrame(v) readFrame(v)
-%-for image folders
-%-order files alphabetisch
-%-show first file
-%-implement run -> calc with interface and show video
-%extract first frame from video file
-%show current mouse position while moving
-
-%Not working
-%folder selection
-
+%% RUN GUI.m in order to see the tracking algorithm in action
 
 function varargout = GUI(varargin)
 % GUI MATLAB code for GUI.fig
