@@ -1,5 +1,8 @@
 function [] = run_ptb_function(setName, mode, plot_level, stopFrame)
 
+% stop after n frames. set to inf if you do not want to stop it
+% automatically.
+% default value: stopFrame = inf;
 if stopFrame == 0
     stopFrame = inf;
 end
@@ -11,16 +14,12 @@ conf
 % 0: do not plot (used for writing output file)
 % 1: plot old and new recangles
 % 2: plot rectangles and key points
-% plot_level = 2;
-
-% stop after n frames. set to inf if you do not want to stop it
-% automatically.
-% stopFrame = inf;
+% default value: plot_level = 2;
 
 % --- mode options:
 % 4: compute key points for both frames and match them using euclid
 % 5: compute key points for both frames and match them using SVM
-% mode = 5;
+% default value: mode = 4;
 
 % parameters used for both methods (euclid and svm matching)
 startFrameId = 1;
@@ -28,30 +27,21 @@ ptbPath = '../evaluation/ptb/';
 % ptbPath = 'C:\Users\12400952\Downloads\EvaluationSet/'
 
 % Datasets from Princeton Tracking Benchmark: http://tracking.cs.princeton.edu/dataset.html
+% some example values:
 % setName = 'face_occ5';
 % setName = 'child_no1';
-%setName = 'new_ex_occ4';
-%setName = 'basketball1';
-%setName = 'child_no2';
-%setName = 'computerbar1';
-%setName = 'toy_yellow_no';%-
-%setName = 'toy_no_occ';
-% setName = 'toy_no';%- fast
-%setName = 'wdog_no1';%-
-%setName = 'wr_no';
-%setName = 'two_book';
-%setName = 'walking_no_occ'; %-
+% setName = 'new_ex_occ4';
 
 directory = [ptbPath, setName, '/'];
 load([directory 'frames']);
 
 %K is [fx 0 cx; 0 fy cy; 0 0 1];  
 K = frames.K;  
-cx = K(1,3); cy = K(2,3);  
-fx = K(1,1); fy = K(2,2);  
+% cx = K(1,3); cy = K(2,3);  
+% fx = K(1,1); fy = K(2,2);  
 
 numOfFrames = frames.length;
-imageNames = cell(1,numOfFrames*2);
+% imageNames = cell(1,numOfFrames*2);
 
 counter = 0;
 
@@ -64,9 +54,7 @@ if mode == 4
     discardNonMovingPoints = 0;
     moveThreshold = 5;
     discardWrongMovements = 1;
-    stopEveryXImage = 0;
     euclidThreshold = 100;
-    useGUI = 0; %not implemented
     plotKeypoints =0;
     global maxKeypointsEuclid
     m = maxKeypointsEuclid%number of keypoints chosen - set high due to bad selection
