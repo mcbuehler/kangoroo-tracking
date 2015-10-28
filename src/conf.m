@@ -19,6 +19,7 @@ global matching_mode
 % 3: match key points using euclidean distance - use whole neighbourhood
 % 4: match key points using euclidean distance - use keypoints in
 % neighbourhood
+% 5: compute key points for both frames and match them using SVM
 
 global keypoint_selection_mode
 %configures how to select maxKeypoint keypoints out of the array vl_sift
@@ -91,6 +92,9 @@ global moveThreshold
   %used for debugging
   %plots all matched keypoints in each image and waits for user
 
+  global ALIGN_SVM_SCORE_THRESHOLD
+% threshold for alignment scores from svm. 0.6 has shown to be a good
+% value. value has to be between 0 and 1.
   
 %parameters - modes
 neighbourhood_size = 15;
@@ -107,14 +111,13 @@ discardNonMovingPoints = 0;
 euclidThreshold = 200;
 moveThreshold = 5;
 
+ALIGN_SVM_SCORE_THRESHOLD = 0.6;
+
 %parameter - other
 startFrameId = 1;
 useGUI = 0; 
 stopEveryXImage = 0;
 plotKeypoints =1;
-
-setenv('DEBUG','1')
- 
 
 ptbPath = '../evaluation/ptb/';
 % ptbPath = 'C:\Users\12400952\Downloads\EvaluationSet/'
@@ -133,4 +136,5 @@ setName = 'basketball1';
 %setName = 'two_book';
 %setName = 'walking_no_occ'; %-
 
-  
+setenv('DEBUG','1')
+

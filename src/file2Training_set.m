@@ -65,8 +65,8 @@ elseif mode == 4
     [~,d1] = vl_sift(I1,'frames',fc1);
     fc2 = [ X2' ; Y2'; scale(m) ; zeros(1,m) ] ;
     [~,d2] = vl_sift(I2,'frames',fc2);
-    feat = d1 - d2;
-    X = double(feat');
+    feat = d1' - d2';
+    X = double(feat);
 else
    disp('invalid mode @file2Training_set'); 
 end

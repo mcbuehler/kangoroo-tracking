@@ -1,4 +1,4 @@
-function [ f,d ] = get_dsift_in_bound( I, bounds, m )
+function [ f,d ] = get_dsift_in_bound( I, bounds, m ,mode)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 % mode options:
@@ -7,7 +7,7 @@ function [ f,d ] = get_dsift_in_bound( I, bounds, m )
 % 3: order by contrast, split array in multiple arrays, use highest
 % contrast points of each of the resulting arrays
 % 4: get points with highest contrast in segments of image
-mode = 3;
+
 
 
 rect = [bounds(1) bounds(2) bounds(1)+bounds(3) bounds(2)+bounds(4)];
@@ -49,12 +49,13 @@ elseif mode == 3
     d = d(:,index);
     
 elseif mode == 4
+    % splitting windows up into several sub windows and computing points
+    % with highest contrast within sub windows
     numWindows = 5;
     not_enough_found = 1;
     while not_enough_found
         seq_w = bounds(3)/numWindows;
         seq_h = bounds(4)/numWindows;
-        tmp =  [];
         f_tmp = [];
         d_tmp = [];
         for i = 1 : numWindows-1
@@ -65,7 +66,6 @@ elseif mode == 4
     %             draw(I,xStart,yStart,seq_w,seq_h);
                 [f,d] = vl_dsift(I,'bounds',window,'norm');
                 [~,index] = sortrows(f',3);
-    %             fprintf('size of index: %d',size(index,1));
                 if length(index)-round(length(index)/3) > 0
                     index = index(length(index)-round(length(index)/3):end)';
                 else
@@ -75,28 +75,24 @@ elseif mode == 4
                 d_tmp = [d_tmp, d(:,index)];
             end
         end
-        if size(f_tmp,2) >= 100
-            not_enough_found = 0
+        if size(f_tmp,2) >= m
+            not_enough_found = 0;
+            debug('> enough found with %d sub windows\n',numWindows);
         else
-            debug('not enough found (%d). repeating loop',size(f_tmp,2));
+            debug('> not enough found (%d). repeating loop\n',size(f_tmp,2));
             numWindows = numWindows-2;
         end
     end
     
     
     perm = randperm(size(f_tmp,2));
-    debug('end index length is: ',length(index));
+    debug('> end index length is: %d\n',length(index));
     index = perm(1:m);
     f = f_tmp(:,index);
     d = d_tmp(:,index);
-else
-    disp('youre wrong');
+
 end
 
-
-
-% plot_tmp(I,f(1,:),f(2,:))
-% waitforbuttonpress
 
 end
 

@@ -15,7 +15,7 @@ svm = fitcsvm(X,Y,'KernelFunction','rbf','Standardize',true,'Kernelscale','auto'
 
 cvsvmmodel = crossval(svm);
 classloss = kfoldLoss(cvsvmmodel);
-debug('> SVM successfully trained. Classloss = %f\n',classloss);
+debug('> SVM successfully trained. Classloss = %f\n',classloss)
 
 if mode == 2
     % -- only for evaluation
