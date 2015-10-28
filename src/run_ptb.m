@@ -20,15 +20,16 @@ mode = 4;
 %direction with count of movementvectors
 
 % parameter 
-m = 500;%number of keypoints chosen - set high due to bad selection
-boundExpander = 50;
+m = 1000;%number of keypoints chosen - set high due to bad selection
+boundExpander = 70;
 discardNonMovingPoints = 0;
 moveThreshold = 5;
 discardWrongMovements = 1;
 stopEveryXImage = 0; 
-euclidThreshold = 200;
+euclidThreshold = 100;
 useGUI = 0; %not implemented
 plotKeypoints =0;
+startFrameId = 1;
 
 
 %matching modes within modes 4
@@ -48,7 +49,7 @@ useCenterOfMatches = 0;
 
 % Code from http://tracking.cs.princeton.edu/dataset.html
 ptbPath = '../evaluation/ptb/'
-%ptbPath = 'C:\Users\12400952\Downloads\EvaluationSet/'
+ptbPath = 'C:\Users\12400952\Downloads\EvaluationSet/'
 
 setName = 'face_occ5';
 setName = 'child_no1';
@@ -66,18 +67,13 @@ setName = 'toy_no';%- fast
 
 directory = [ptbPath, setName, '/'];
 
-startFrameId = 1;
-
-% max number of key points per frame considered for matching
-m = 10;
 
 % Dataset from Princeton Tracking Benchmark: http://tracking.cs.princeton.edu/dataset.html
-setName = 'face_occ5';
-setName = 'child_no1';
-setName = 'zcup_move_1';
-setName = 'bear_front';
+% setName = 'face_occ5';
+% setName = 'child_no1';
+% setName = 'zcup_move_1';
+% setName = 'bear_front';
 % setName = 'new_ex_occ4';
-directory = ['../evaluation/ptb/', setName, '/'];
 
 load([directory 'frames']);  
 
