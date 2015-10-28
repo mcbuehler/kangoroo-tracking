@@ -1,3 +1,4 @@
+
 clear all;
 % load global conf variables
 conf
@@ -36,13 +37,18 @@ setName = 'child_no1';
 %setName = 'two_book';
 %setName = 'walking_no_occ'; %-
 
+
+% parameter 
+mode = matching_mode;
+m = maxKeypoints;
+
 directory = [ptbPath, setName, '/'];
 load([directory 'frames']);
 
-%K is [fx 0 cx; 0 fy cy; 0 0 1];
-K = frames.K;
-cx = K(1,3); cy = K(2,3);
-fx = K(1,1); fy = K(2,2);
+%K is [fx 0 cx; 0 fy cy; 0 0 1];  
+K = frames.K;  
+cx = K(1,3); cy = K(2,3);  
+fx = K(1,1); fy = K(2,2);  
 
 numOfFrames = frames.length;
 imageNames = cell(1,numOfFrames*2);
