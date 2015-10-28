@@ -66,7 +66,6 @@ elseif mode == 4
     %             draw(I,xStart,yStart,seq_w,seq_h);
                 [f,d] = vl_dsift(I,'bounds',window,'norm');
                 [~,index] = sortrows(f',3);
-    %             fprintf('size of index: %d',size(index,1));
                 if length(index)-round(length(index)/3) > 0
                     index = index(length(index)-round(length(index)/3):end)';
                 else

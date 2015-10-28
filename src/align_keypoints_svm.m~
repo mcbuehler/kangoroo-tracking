@@ -1,9 +1,7 @@
 function [ X_n, Y_n ] = align_keypoints_svm(svm,I2,f1,d1,bounds)
-%% uses SVM in order to decide which point in neighbourhood is most similar to old points
-% If an alignment of point is not clear enough (defined by a threshold), it is discarded.
+%% looks at a 
 
 global neighbourhood_size;
-global ALIGN_SVM_SCORE_THRESHOLD
 m = size(f1,2);
 
 X_o = f1(1,:)';
@@ -25,7 +23,7 @@ for i = 1 : m
 % get index where score for y=1 is max
     [~,m_i] = max(scores(:,2));
    
-    if scores(m_i) > ALIGN_SVM_SCORE_THRESHOLD
+    if scores(m_i) > 0.6
         X_n(i) = nbs_f(1,m_i);
         Y_n(i) = nbs_f(2,m_i);
     end

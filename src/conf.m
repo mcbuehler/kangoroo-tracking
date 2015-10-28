@@ -10,3 +10,8 @@ global file2Training_set_mode
 file2Training_set_mode = 4;
 
 setenv('DEBUG','1')
+
+% threshold for alignment scores from svm. 0.6 has shown to be a good
+% value. value has to be between 0 and 1.
+global ALIGN_SVM_SCORE_THRESHOLD
+ALIGN_SVM_SCORE_THRESHOLD = 0.6;
