@@ -41,16 +41,16 @@ function varargout = GUI(varargin)
 
 % Edit the above text to modify the response to help GUI
 
-% Last Modified by GUIDE v2.5 28-Oct-2015 20:15:51
+% Last Modified by GUIDE v2.5 28-Oct-2015 22:14:02
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-                   'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @GUI_OpeningFcn, ...
-                   'gui_OutputFcn',  @GUI_OutputFcn, ...
-                   'gui_LayoutFcn',  [] , ...
-                   'gui_Callback',   []);
+    'gui_Singleton',  gui_Singleton, ...
+    'gui_OpeningFcn', @GUI_OpeningFcn, ...
+    'gui_OutputFcn',  @GUI_OutputFcn, ...
+    'gui_LayoutFcn',  [] , ...
+    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
     gui_State.gui_Callback = str2func(varargin{1});
 end
@@ -174,21 +174,21 @@ handles.popVideo.String = {folder.name} ;
 
 function Run(handles)
 
-    videoname = handles.popVideo.UserData;
-   
-  
-    switch handles.popMatching.value
-        case 1
-              matching = 5;
-        case 2
-              matching = 4;
-    end
+videoname = handles.popVideo.UserData;
 
-   stop = handles.checkStop.Value;
-   plotLevel = handles.popDisplay.Value;
-  
-    run_ptb_function(videoname,matching, stop, plotLevel);
-    
+
+switch handles.popMatching.Value
+    case 1
+        matching = 5;
+    case 2
+        matching = 4;
+end
+
+stop = handles.checkStop.Value;
+plotLevel = handles.popDisplay.Value;
+
+run_ptb_function(videoname,matching, stop, plotLevel);
+
 
 %redraws the current image and rectangles
 function Redraw
@@ -196,27 +196,27 @@ function Redraw
 
 %if ~(getCurrentImg == '')
 
-    %add rectangles to image
-    locImg = getCurrentImg;
-    currentRects = getCurrentRects;
-    if size(currentRects(),1) > 0
-        for i = 1:size(currentRects,1)           
-           locImg = insertShape(locImg,'Rectangle', currentRects(i,:), 'Color', rectColor, 'LineWidth', rectThickness); 
-        end
+%add rectangles to image
+locImg = getCurrentImg;
+currentRects = getCurrentRects;
+if size(currentRects(),1) > 0
+    for i = 1:size(currentRects,1)
+        locImg = insertShape(locImg,'Rectangle', currentRects(i,:), 'Color', rectColor, 'LineWidth', rectThickness);
     end
-    
-    %draw preview rect
-    tempRect = getPreviewRect;
-    if size(tempRect,1) > 0           
-        locImg = insertShape(locImg,'Rectangle', tempRect(1,:), 'Color', rectColor, 'LineWidth', rectThickness); 
-    end
-    
-    %draw image
-    imageHandle = imshow(locImg);
+end
 
-    %install eventhandler for btndown
-    imageHandle.ButtonDownFcn = @ImageBtnDown;
-    
+%draw preview rect
+tempRect = getPreviewRect;
+if size(tempRect,1) > 0
+    locImg = insertShape(locImg,'Rectangle', tempRect(1,:), 'Color', rectColor, 'LineWidth', rectThickness);
+end
+
+%draw image
+imageHandle = imshow(locImg);
+
+%install eventhandler for btndown
+imageHandle.ButtonDownFcn = @ImageBtnDown;
+
 %end
 
 
@@ -244,7 +244,7 @@ setCurrentRects(newM);
 function ClearRects()
 setCurrentRects([]);
 
-% 
+%
 % %returns rectangle as [x y width height) from any given to points
 % function value = CreateRect(x1,y1,x2,y2)
 % if x2 > x1
@@ -254,7 +254,7 @@ setCurrentRects([]);
 %     leftX = x2;
 %     rightX = x1;
 % end
-% 
+%
 % if y2 < y1
 %     upperY = y2;
 %     lowerY = y1;
@@ -262,16 +262,16 @@ setCurrentRects([]);
 %     upperY = y1;
 %     lowerY = y2;
 % end
-% 
+%
 % value = [leftX upperY (rightX - leftX) (lowerY - upperY)];
 
-%displays first image of imagefolder ore video file 
+%displays first image of imagefolder ore video file
 function ShowFirstImage
 
 %getFiles
 files = dir(readImageFolderPath);
 if size(files,1) > 0
-   SetImage(files(1,1));
+    SetImage(files(1,1));
 end
 Redraw;
 
@@ -346,7 +346,7 @@ if size(previewRect,1) > 0
     
     %get UI handles
     handles = guidata(objecthandle);
-
+    
     %Get cursor location
     cursorLocation = handles.img.CurrentPoint;
     x = round(cursorLocation(1,1));
@@ -359,9 +359,9 @@ if size(previewRect,1) > 0
     %redraw
     Redraw;
 end
-    
+
 % --- Outputs from this function are returned to the command line.
-function varargout = GUI_OutputFcn(hObject, eventdata, handles) 
+function varargout = GUI_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -377,11 +377,11 @@ function btnSelect_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 %if ~strcmp(computer, 'PCWIN')
- %   errordlg('This function only works on a Windows PC. Please use the conf.txt instead.', 'error', 'modal');
+%   errordlg('This function only works on a Windows PC. Please use the conf.txt instead.', 'error', 'modal');
 %else
-    folder = uigetfolder('Select folder','');
-    writeImageFolderPath(folder);
-    ShowFirstImage;
+folder = uigetfolder('Select folder','');
+writeImageFolderPath(folder);
+ShowFirstImage;
 %end
 
 
@@ -501,3 +501,13 @@ function checkStop_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkStop
+
+
+% --- Executes on button press in stopBtn.
+function stopBtn_Callback(hObject, eventdata, handles)
+% hObject    handle to stopBtn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global TERMINATE
+TERMINATE = 1;
+

@@ -140,3 +140,6 @@ ptbPath = '../evaluation/ptb/';
 
 setenv('DEBUG','1')
 
+global TERMINATE
+TERMINATE = 0;
+

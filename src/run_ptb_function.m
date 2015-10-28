@@ -25,6 +25,9 @@ conf
 % parameters used for both methods (euclid and svm matching)
 startFrameId = 1;
 ptbPath = '../evaluation/ptb/';
+% set to 1 will stop script execution
+global TERMINATE
+
 % ptbPath = 'C:\Users\12400952\Downloads\EvaluationSet/'
 
 % Datasets from Princeton Tracking Benchmark: http://tracking.cs.princeton.edu/dataset.html
@@ -36,10 +39,10 @@ ptbPath = '../evaluation/ptb/';
 directory = [ptbPath, setName, '/'];
 load([directory 'frames']);
 
-%K is [fx 0 cx; 0 fy cy; 0 0 1];  
-K = frames.K;  
-% cx = K(1,3); cy = K(2,3);  
-% fx = K(1,1); fy = K(2,2);  
+%K is [fx 0 cx; 0 fy cy; 0 0 1];
+K = frames.K;
+% cx = K(1,3); cy = K(2,3);
+% fx = K(1,1); fy = K(2,2);
 
 numOfFrames = frames.length;
 % imageNames = cell(1,numOfFrames*2);
@@ -196,7 +199,7 @@ if mode == 4
             
             % compute new bounding box for display
             X = [objRect(1), x2]'; Y = [objRect(2), y2]'; W = [objRect(3), w2]'; H = [objRect(4), h2]';
-
+            
             if plot_level == 1
                 draw(rgb,X,Y,W,H);
                 drawnow
@@ -234,6 +237,12 @@ if mode == 4
                 end
             end
         end
+        
+        if TERMINATE
+            fprintf('> Exiting...');
+            TERMINATE = 0;
+            return
+        end
     end
 elseif mode == 5
     svm = train_svm();
@@ -259,10 +268,10 @@ elseif mode == 5
         rgb = imread(imageName);
         fprintf('---\n> processing frame %d\n',frameId)
         I_n = preprocess_image(rgb);
-    
+        
         % get new key point candidates
         [f1,d1] = get_dsift_in_bound(I_o,bounds,m,4);
-    
+        
         % reassigning variable names (only for better readability). X_o is
         % a vector with old X values for points. Same for Y_o.
         X_o = f1(1,:);
@@ -286,20 +295,20 @@ elseif mode == 5
             Y_n = Y_o;
         end
         debug('> accepted alignments: %d out of %d\n',[length(X_n),m]);
-     
+        
         % filter aligned points by eliminating supposedly false alignments
         [X_o_accepted,X_n,Y_o_accepted,Y_n] = discard_fp(X_o_accepted,X_n,Y_o_accepted,Y_n);
         [x_vec,y_vec] = get_avg_movement(X_o_accepted,X_n,Y_o_accepted,Y_n);
-    
+        
         debug('> moving rectangle x %f and y %f\n',[x_vec,y_vec]);
-    
+        
         % defining new rectangle
         x2 = bounds(1)+x_vec;
         y2 = bounds(2)+y_vec;
         w2 = bounds(3);
         h2 = bounds(4);
         rect2 = [x2, y2, w2, h2];
-
+        
         if plot_level == 1
             draw(rgb,[bounds(1);x2],[bounds(2);y2],[bounds(3);w2],[bounds(4);h2]);
             drawnow
@@ -318,6 +327,12 @@ elseif mode == 5
         % reassign variables
         I_o = I_n;
         bounds = rect2;
+        
+        if TERMINATE
+            fprintf('> Exiting...');
+            TERMINATE = 0;
+            return
+        end
     end
 end
 
