@@ -124,10 +124,10 @@ plotKeypoints =1;
 ptbPath = '../evaluation/ptb/';
 % ptbPath = 'C:\Users\12400952\Downloads\EvaluationSet/'
 
-setName = 'face_occ5';
-setName = 'child_no1';
-setName = 'new_ex_occ4';
-setName = 'basketball1';
+% setName = 'face_occ5';
+% setName = 'child_no1';
+% setName = 'new_ex_occ4';
+% setName = 'basketball1';
 %setName = 'child_no2';
 %setName = 'computerbar1';
 %setName = 'toy_yellow_no';%-
