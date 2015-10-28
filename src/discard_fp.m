@@ -13,14 +13,14 @@ moving_down = y_vec > 0
 
 % get indeces for all vectors that go right
 if moving_right
-    indeces_horizontal = find((X2 - X1) > zeros(count1,1))
+    indeces_horizontal = find((X2 - X1) > zeros(count1,1));
 else
-    indeces_horizontal = find((X2 - X1) < zeros(count1,1))
+    indeces_horizontal = find((X2 - X1) < zeros(count1,1));
 end
 if moving_down
-    indeces_vertical = find((Y2 - Y1) > zeros(count1,1))
+    indeces_vertical = find((Y2 - Y1) > zeros(count1,1));
 else
-    indeces_vertical = find((Y2 - Y1) < zeros(count1,1))
+    indeces_vertical = find((Y2 - Y1) < zeros(count1,1));
 end
 indeces = intersect(indeces_horizontal,indeces_vertical);
 X1 = X1(indeces);
