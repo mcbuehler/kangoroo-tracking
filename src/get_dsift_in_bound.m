@@ -53,6 +53,10 @@ elseif mode == 4
     % with highest contrast within sub windows
     numWindows = 5;
     not_enough_found = 1;
+    
+    % normally this loop only runs once. but if there are not enough key
+    % points found, it will be run again with a smaller numWindows (results
+    % in more key points found)
     while not_enough_found
         seq_w = bounds(3)/numWindows;
         seq_h = bounds(4)/numWindows;
@@ -69,7 +73,7 @@ elseif mode == 4
                 if length(index)-round(length(index)/3) > 0
                     index = index(length(index)-round(length(index)/3):end)';
                 else
-                    debug('not enough indeces found. using all that we have (%d).\n',length(index));
+                    debug('> not enough indeces found. using all that we have (%d).\n',length(index));
                 end
                 f_tmp = [f_tmp, f(:,index)];
                 d_tmp = [d_tmp, d(:,index)];
@@ -77,16 +81,15 @@ elseif mode == 4
         end
         if size(f_tmp,2) >= m
             not_enough_found = 0;
-            debug('> enough found with %d sub windows\n',numWindows);
+            debug('> found: %d key points in %d sub windows\n',[size(f_tmp,2),numWindows]);
         else
             debug('> not enough found (%d). repeating loop\n',size(f_tmp,2));
             numWindows = numWindows-2;
         end
     end
     
-    
     perm = randperm(size(f_tmp,2));
-    debug('> end index length is: %d\n',length(index));
+    debug('> chosing %d out of the %d most signifcant key points\n',[m,size(f_tmp,2)]);
     index = perm(1:m);
     f = f_tmp(:,index);
     d = d_tmp(:,index);

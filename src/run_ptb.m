@@ -9,13 +9,14 @@ conf
 % 2: plot rectangles and key points
 plot_level = 2;
 
-% stop after n frames
-stopFrame = 2;
+% stop after n frames. set to inf if you do not want to stop it
+% automatically.
+stopFrame = inf;
 
 % --- mode options:
 % 4: compute key points for both frames and match them using euclid
 % 5: compute key points for both frames and match them using SVM
-mode = 4;
+mode = 5;
 
 % parameters used for both methods (euclid and svm matching)
 startFrameId = 1;
@@ -36,11 +37,6 @@ setName = 'child_no1';
 %setName = 'wr_no';
 %setName = 'two_book';
 %setName = 'walking_no_occ'; %-
-
-
-% parameter 
-mode = matching_mode;
-m = maxKeypoints;
 
 directory = [ptbPath, setName, '/'];
 load([directory 'frames']);
@@ -68,7 +64,8 @@ if mode == 4
     euclidThreshold = 100;
     useGUI = 0; %not implemented
     plotKeypoints =0;
-    m = 1000;%number of keypoints chosen - set high due to bad selection
+    global maxKeypointsEuclid
+    m = maxKeypointsEuclid%number of keypoints chosen - set high due to bad selection
     
     % format: x y w h
     objRect = load([directory 'init.txt']);
@@ -254,7 +251,8 @@ elseif mode == 5
     svm = train_svm();
     % key points considered (per frame). the actual number will be lower as
     % low quality key points and false alignment are discarded later
-    m = 100;
+    global maxKeyPointsSVM
+    m = maxKeyPointsSVM;
     
     % storing results (only needed for writing output file)
     result = zeros(numOfFrames,4);
@@ -268,17 +266,22 @@ elseif mode == 5
     I_o = preprocess_image(rgb);
     
     for frameId = startFrameId+1:numOfFrames
+        % load and preprocess new image
         imageName = fullfile(directory,sprintf('rgb/r-%d-%d.png', frames.imageTimestamp(frameId), frames.imageFrameID(frameId)));
         rgb = imread(imageName);
-        fprintf('> processing frame %d\n',frameId)
+        fprintf('---\n> processing frame %d\n',frameId)
         I_n = preprocess_image(rgb);
     
-        % get new key points
+        % get new key point candidates
         [f1,d1] = get_dsift_in_bound(I_o,bounds,m,4);
     
+        % reassigning variable names (only for better readability). X_o is
+        % a vector with old X values for points. Same for Y_o.
         X_o = f1(1,:);
         Y_o = f1(2,:);
         
+        % Aligning old and new key points. not all points will be aligned
+        % (criterium: contrast)
         [X_n,Y_n] = align_keypoints_svm(svm,I_n,f1,d1,bounds);
         
         % Only extract aligned points. some points may have been discarded
@@ -290,10 +293,11 @@ elseif mode == 5
         X_o_accepted = X_o(accepted)';
         Y_o_accepted = Y_o(accepted)';
         if length(X_n) < 1
-            disp('target lost. Using old coordinates.');
+            disp('> target lost. Using old coordinates.');
             X_n = X_o;
             Y_n = Y_o;
         end
+        debug('> accepted alignments: %d out of %d\n',[length(X_n),m]);
      
         % filter aligned points by eliminating supposedly false alignments
         [X_o_accepted,X_n,Y_o_accepted,Y_n] = discard_fp(X_o_accepted,X_n,Y_o_accepted,Y_n);
@@ -322,6 +326,7 @@ elseif mode == 5
         end
         
         result(frameId,:) = rect2;
+        
         % reassign variables
         I_o = I_n;
         bounds = rect2;

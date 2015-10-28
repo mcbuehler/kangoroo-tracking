@@ -30,10 +30,12 @@ global keypoint_selection_mode
 % contrast points of each of the resulting arrays
 % 4: get points with highest contrast in segments of image
 
-global maxKeypoints
+global maxKeypointsEuclid
 %number of keypoints chosen in get_dsift_in_bound - set high due to bad selection
+maxKeypointsEuclid = 1000;
 
-
+global maxKeyPointsSVM
+maxKeyPointsSVM = 100;
 
 global boundExpander
 %defines the size of the considered neighbourhood for a keypoint while
