@@ -10,6 +10,9 @@
 ----- How to start -----
 run GUI.m in Matlab
 
+----- GitHub URL -----
+https://github.com/mbbuehler/kangoroo-tracking
+
 ----- Details -----
 This object tracking algorithm uses different methods for finding key points and matching them.
 Using the GUI the are different parameters to select:
@@ -23,9 +26,9 @@ b) SVM
 3 Display mode: Choose between rectangles or rectangles and actual key points  
 
 4 Stop after very frame: Check if you want to see every frame before continuing manually
-	
 
-Modality of the code:
+
+----- Modality of the code -----
 
 1. reading the images and preprocessing
 
