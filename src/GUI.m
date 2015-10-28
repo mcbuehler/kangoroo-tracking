@@ -156,47 +156,39 @@ guidata(hObject, handles);
 
 %populate popup boxes
 
-handles.popMatching = {'SVM';'Euclidian Distance'};
-handles.popDisplay = {'Show rectangles';'Show rectangles and key points'};
-handles.popVideo = {'todo'};
+handles = guidata(hObject);
+handles.popMatching.String = {'SVM';'Euclidian Distance'};
+handles.popDisplay.String = {'Show rectangles';'Show rectangles and key points'};
 
-function Run
-if size(getCurrentRects,2) == 0
-    errordlg('You need to select an object.', 'Select one object!', 'modal');
-elseif size(getCurrentRects,2) > 1
-    %TODO
-    errordlg('Tracking multiple objects is not implemented yet. Clear your selection and select one object.', 'Too many objects', 'modal');
-else
-    %TODO
-%     currentKeypoints = sift(I);
-%     while img = nextImage
-%         %find keypoints in next image
-%         currentKeypoints = alignKeypoints(currentKeypoints, I);
-%         
-%         %set image
-%         SetCurrentImg(img);
-%         
-%         %draw rect
-%         ClearRects;
-%         AddRect(CreateRect(currentKeypoints)) %need to extract just the X Y vectors
-%         
-%         %draw
-%         Redraw
-%         
-%         %wait
-%         
-%     end
+global ptbPath
+
+%get folders
+folder = dir (ptbPath);
+
+%remove '.' and '..'
+folder = folder (3:end);
+
+handles.popVideo.String = {folder.name} ;
+%set(handles.popDisplay,'String',temp_cellstr);
+
+
+function Run(handles)
+
+    videoname = handles.popVideo.UserData;
+   
+  
+    switch handles.popMatching.value
+        case 1
+              matching = 5;
+        case 2
+              matching = 4;
+    end
+
+   stop = handles.checkStop.Value;
+   plotLevel = handles.popDisplay.Value;
+  
+    run_ptb_function(videoname,matching, stop, plotLevel);
     
-    %rects = trackObject(getCurrentRects(1)) %Marcels function that gives me one rectangle for each image
-    %for i = 1:size(rects)
-    %   setCurrentRects(rects(i));
-    %setCurrentImage(next image);
-    % Redraw;
-    %  wait;
-    %end
-end
-
-
 
 %redraws the current image and rectangles
 function Redraw
@@ -407,7 +399,7 @@ function btnStart_Callback(hObject, eventdata, handles)
 % hObject    handle to btnStart (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-Run;
+Run(guidata(hObject));
 
 
 % --- Executes on selection change in popVideo.
