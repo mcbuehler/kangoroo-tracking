@@ -7,8 +7,8 @@ function [ X1, X2, Y1, Y2 ] = discard_fp( X1,X2,Y1,Y2 )
 count1 = length(X2);
 
 % flags indicating movement
-moving_right = x_vec > 0
-moving_down = y_vec > 0
+moving_right = x_vec > 0;
+moving_down = y_vec > 0;
 
 
 % get indeces for all vectors that go right

@@ -1,39 +1,24 @@
 clear all;
-% set global conf variables
+% load global conf variables
 conf
 
+% plotting level
+% 0: do not plot (used for writing output file)
+% 1: plot old and new recangles
+% 2: plot rectangles and key points
+plot_level = 2;
+
+% stop after n frames
+stopFrame = 2;
+
 % --- mode options:
-% 1: match key points using svm
-% 2: use ubcmatch
-% 3: match key points using euclidean distance
 % 4: compute key points for both frames and match them using euclid
 % 5: compute key points for both frames and match them using SVM
 mode = 4;
-mode = 5;
 
-%todo
-%gui
-%beste keypoints
-%-> mode in get_dsift_in_bound
-%euclidThreshold dynamic(when little amount of kp)
-%boundExpander dynamic(when big movement vector
-%more kp, lower Threshold(->higher expander?)
-%direction with count of movementvectors
-
-% parameter
-m = 1000;%number of keypoints chosen - set high due to bad selection
-boundExpander = 20;
-discardNonMovingPoints = 0;
-moveThreshold = 5;
-discardWrongMovements = 1;
-stopEveryXImage = 0;
-euclidThreshold = 100;
-useGUI = 0; %not implemented
-plotKeypoints =0;
+% parameters used for both methods (euclid and svm matching)
 startFrameId = 1;
-
-
-ptbPath = '../evaluation/ptb/'
+ptbPath = '../evaluation/ptb/';
 % ptbPath = 'C:\Users\12400952\Downloads\EvaluationSet/'
 
 % Datasets from Princeton Tracking Benchmark: http://tracking.cs.princeton.edu/dataset.html
@@ -61,7 +46,6 @@ fx = K(1,1); fy = K(2,2);
 
 numOfFrames = frames.length;
 imageNames = cell(1,numOfFrames*2);
-svm = train_svm();
 
 counter = 0;
 
@@ -69,6 +53,17 @@ counter = 0;
 result = zeros(numOfFrames,4);
 
 if mode == 4
+    % setting parameters for euclidean matching
+    boundExpander = 20;
+    discardNonMovingPoints = 0;
+    moveThreshold = 5;
+    discardWrongMovements = 1;
+    stopEveryXImage = 0;
+    euclidThreshold = 100;
+    useGUI = 0; %not implemented
+    plotKeypoints =0;
+    m = 1000;%number of keypoints chosen - set high due to bad selection
+    
     % format: x y w h
     objRect = load([directory 'init.txt']);
     
@@ -128,8 +123,6 @@ if mode == 4
                         bestMatchEuclid = euclid;
                         bestMatchKeypoint = fCurrent(:,kpCurrentID);
                     end
-                    
-                    
                 end
             end
             
@@ -212,15 +205,23 @@ if mode == 4
                 plot_tmp(img,X_n,Y_n);
             end
             
-            draw(rgb,X,Y,W,H);
-            drawnow
             
-            counter = counter + 1;
-            if stopEveryXImage > 0 && mod(counter,stopEveryXImage) == 0
-                waitforbuttonpress
-            else
+            if plot_level == 1
+                draw(rgb,X,Y,W,H);
+                drawnow
+                pause(0.1);
+            elseif plot_level == 2
+                plot_tmp(rgb,X_o,Y_o,X_n,Y_n,objRect,[x2, y2, w2, h2]);
+                drawnow
                 pause(0.1);
             end
+            
+            if mod(frameId,stopFrame) == 0
+                input(['> Stopped at frame ',num2str(frameId),'. Press enter to continue']);
+                fprintf('> Continuing...\n');
+            end
+            
+            counter = counter + 1;
             
             % save result needed for ptb evaluation
             result(frameId,:) = [x2, y2, w2, h2];
@@ -243,19 +244,24 @@ if mode == 4
             end
         end
     end
-    
 elseif mode == 5
+    svm = train_svm();
+    % key points considered (per frame). the actual number will be lower as
+    % low quality key points and false alignment are discarded later
     m = 100;
+    
+    % storing results (only needed for writing output file)
     result = zeros(numOfFrames,4);
+    
     % format: x y w h
     bounds = load([directory 'init.txt']);
     
+    % load and prepare first image
     imageName = fullfile(directory,sprintf('rgb/r-%d-%d.png', frames.imageTimestamp(startFrameId), frames.imageFrameID(startFrameId)));
     rgb = imread(imageName);
     I_o = preprocess_image(rgb);
-    % End code kangoroo-tracking group
     
-    for frameId = startFrameId:numOfFrames
+    for frameId = startFrameId+1:numOfFrames
         imageName = fullfile(directory,sprintf('rgb/r-%d-%d.png', frames.imageTimestamp(frameId), frames.imageFrameID(frameId)));
         rgb = imread(imageName);
         fprintf('> processing frame %d\n',frameId)
@@ -268,6 +274,7 @@ elseif mode == 5
         Y_o = f1(2,:);
         
         [X_n,Y_n] = align_keypoints_svm(svm,I_n,f1,d1,bounds);
+        
         % Only extract aligned points. some points may have been discarded
         % by align_keypoints_svm (e.g. if key point was not relevant
         % enough)
@@ -288,18 +295,24 @@ elseif mode == 5
     
         debug('> moving rectangle x %f and y %f\n',[x_vec,y_vec]);
     
+        % defining new rectangle
         x2 = bounds(1)+x_vec;
         y2 = bounds(2)+y_vec;
         w2 = bounds(3);
         h2 = bounds(4);
         rect2 = [x2, y2, w2, h2];
-%     
-        if getenv('DEBUG') == '1'
-            plot_tmp(I_n,X_o_accepted,Y_o_accepted,X_n,Y_n,bounds,rect2);
+
+        if plot_level == 1
+            draw(rgb,[bounds(1);x2],[bounds(2);y2],[bounds(3);w2],[bounds(4);h2]);
             drawnow
-        else
-            draw(rgb,x2,y2,w2,h2);
+        elseif plot_level == 2
+            plot_tmp(rgb,X_o_accepted,Y_o_accepted,X_n,Y_n,bounds,rect2);
             drawnow
+        end
+        
+        if mod(frameId,stopFrame) == 0
+            input(['> Stopped at frame ',num2str(frameId),'. Press enter to continue']);
+            fprintf('> Continuing...\n');
         end
         
         result(frameId,:) = rect2;
