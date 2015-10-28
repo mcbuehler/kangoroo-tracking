@@ -91,15 +91,13 @@ if mode == 4
         % the new frame
         expRect = enlarge_rectangle_pixel(objRect(1), objRect(2), objRect(3),objRect(4), boundExpander);
         expRect = fitToImage(expRect,img);
-    
-       %get keypoints within expRect in current img
-
-             [fCurrent,dCurrent] =  get_dsift_in_bound(img,expRect,m);
+        [fCurrent,dCurrent] =  get_dsift_in_bound(img,expRect,m);
         
         %define array of matching keypoints[xo, xn, yo,yn]
         matches = [];
         
-        %iterate through all keypoints from the last img
+        %iterate through all keypoints from the last img and try to find
+        %new matching key points
         for kpLastID = 1:size(fLast,2)
             
             %get coordinates of keypoint
@@ -108,11 +106,11 @@ if mode == 4
             
             %get rect that defines the current keypoint's neighborhood
             neighbourhoodRect = enlarge_rectangle_pixel(x,y,0,0, boundExpander);
-            %todo check if still in img            
+            neighbourhood = fitToImage(neighbourhoodRect,img);           
             
             %find best match within neighbourhood
             bestMatchKeypoint =[];
-            bestMatchEuclid = 100000;
+            bestMatchEuclid = inf;
             
             %find best match in neighbourhood
             %iterate through all keypoints from the current img
@@ -150,16 +148,8 @@ if mode == 4
                 X_o = matches(:,1);
                 Y_n = matches(:,4);
                 Y_o = matches(:,3);
-
-
-
-                %get movement vectors
-                x_move = (X_n - X_o);
-                y_move = (Y_n - Y_o);
-
-                %get  mean
-                x_mean = mean(x_move);
-                y_mean = mean(y_move);
+                
+                [x_mean,y_mean] = get_avg_movement(X_o,X_n,Y_o,Y_n);
 
                 %discard non moving key points
                 if discardNonMovingPoints == 1
@@ -228,6 +218,7 @@ if mode == 4
                     plot_tmp(img,X_n,Y_n);
                 end
                  draw(rgb,X,Y,W,H);
+                 drawnow
                 %wait
                 %waitforbuttonpress
                 counter = counter + 1;
@@ -259,75 +250,71 @@ if mode == 4
             end  
     end 
     
-else
+% else
     
-    XYZcam = zeros(480,640,4,numOfFrames);
-
-    % XYZcam = zeros(480,640,4,numOfFrames);
 % 
-
-result = zeros(numOfFrames,4);
-% format: x y w h
-bounds = load([directory 'init.txt']);
-
-imageName = fullfile(directory,sprintf('rgb/r-%d-%d.png', frames.imageTimestamp(startFrameId), frames.imageFrameID(startFrameId)));  
-rgb = imread(imageName);
-I_o = preprocess_image(rgb);
-% End code kangoroo-tracking group
-
-for frameId = startFrameId:numOfFrames  
-    imageName = fullfile(directory,sprintf('rgb/r-%d-%d.png', frames.imageTimestamp(frameId), frames.imageFrameID(frameId)));  
-    rgb = imread(imageName);
-    % ------------------------------
-    % Start Code kangoroo-tracking group
-    fprintf('> processing frame %d\n',frameId)
-    I_n = preprocess_image(rgb);
-
-    % get new key points
-    [f1,d1] = get_dsift_in_bound(I_o,bounds,m);
-
-    X_o = f1(1,:);
-    Y_o = f1(2,:);
-    
-    if mode == 1
-        [X_n,Y_n] = align_keypoints_svm(svm,I_n,f1,d1,bounds);
-    elseif mode == 2
-        [X_n,Y_n] = align_keypoints_ubcmatch(I_n,f1,d1,bounds);
-    elseif mode == 3
-        [X_n,Y_n] = align_keypoints_euclid(I_n,f1,d1,bounds);
-    end
-    ;
-    % Only extract aligned points
-    accepted = find(X_n)
-    X_n = X_n(accepted);
-    Y_n = Y_n(accepted);
-    X_o_accepted = X_o(accepted)';
-    Y_o_accepted = Y_o(accepted)';
-    if length(X_n) < 1
-        disp('target lost. Using old coordinates.');
-        X_n = X_o;
-        Y_n = Y_o;
-    end
-    [x_vec,y_vec] = get_avg_movement(X_o_accepted,X_n,Y_o_accepted,Y_n);
-    
-    debug('> moving rectangle x %f and y %f\n',[x_vec,y_vec]);
-    
-    x2 = bounds(1)+x_vec;
-    y2 = bounds(2)+y_vec;
-    w2 = bounds(3);
-    h2 = bounds(4);
-    rect2 = [x2, y2, w2, h2];
-    
-    if getenv('DEBUG') == '1'
-        plot_tmp(I_n,X_o_accepted,Y_o_accepted,X_n,Y_n,bounds,rect2);
-        drawnow
-    end
-    
-    result(frameId,:) = rect2;
-    % reassign variables
-    I_o = I_n;
-    bounds = rect2;
-end
+% result = zeros(numOfFrames,4);
+% % format: x y w h
+% bounds = load([directory 'init.txt']);
+% 
+% imageName = fullfile(directory,sprintf('rgb/r-%d-%d.png', frames.imageTimestamp(startFrameId), frames.imageFrameID(startFrameId)));  
+% rgb = imread(imageName);
+% I_o = preprocess_image(rgb);
+% % End code kangoroo-tracking group
+% 
+% for frameId = startFrameId:numOfFrames  
+%     imageName = fullfile(directory,sprintf('rgb/r-%d-%d.png', frames.imageTimestamp(frameId), frames.imageFrameID(frameId)));  
+%     rgb = imread(imageName);
+%     % ------------------------------
+%     % Start Code kangoroo-tracking group
+%     fprintf('> processing frame %d\n',frameId)
+%     I_n = preprocess_image(rgb);
+% 
+%     % get new key points
+%     [f1,d1] = get_dsift_in_bound(I_o,bounds,m);
+% 
+%     X_o = f1(1,:);
+%     Y_o = f1(2,:);
+%     
+%     if mode == 1
+%         [X_n,Y_n] = align_keypoints_svm(svm,I_n,f1,d1,bounds);
+%     elseif mode == 2
+%         [X_n,Y_n] = align_keypoints_ubcmatch(I_n,f1,d1,bounds);
+%     elseif mode == 3
+%         [X_n,Y_n] = align_keypoints_euclid(I_n,f1,d1,bounds);
+%     end
+%     ;
+%     % Only extract aligned points
+%     accepted = find(X_n)
+%     X_n = X_n(accepted);
+%     Y_n = Y_n(accepted);
+%     X_o_accepted = X_o(accepted)';
+%     Y_o_accepted = Y_o(accepted)';
+%     if length(X_n) < 1
+%         disp('target lost. Using old coordinates.');
+%         X_n = X_o;
+%         Y_n = Y_o;
+%     end
+%     [x_vec,y_vec] = get_avg_movement(X_o_accepted,X_n,Y_o_accepted,Y_n);
+%     
+%     debug('> moving rectangle x %f and y %f\n',[x_vec,y_vec]);
+%     
+%     x2 = bounds(1)+x_vec;
+%     y2 = bounds(2)+y_vec;
+%     w2 = bounds(3);
+%     h2 = bounds(4);
+%     rect2 = [x2, y2, w2, h2];
+%     
+%     if getenv('DEBUG') == '1'
+%         plot_tmp(I_n,X_o_accepted,Y_o_accepted,X_n,Y_n,bounds,rect2);
+%         drawnow
+%     end
+%     
+%     result(frameId,:) = rect2;
+%     % reassign variables
+%     I_o = I_n;
+%     bounds = rect2;
+% end
 end  
 
 disp('> writing data')
