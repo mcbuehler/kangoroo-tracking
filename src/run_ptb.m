@@ -1,13 +1,13 @@
-% ------------------------------
-%setenv('DEBUG','1')
 clear all;
+% set global conf variables
 conf
-%hold off
+
 % --- mode options:
 % 1: match key points using svm
 % 2: use ubcmatch
 % 3: match key points using euclidean distance
-
+% 4: compute key points for both frames and match them using euclid
+% 5: compute key points for both frames and match them using SVM
 mode = 4;
 
 %todo
@@ -21,7 +21,7 @@ mode = 4;
 
 % parameter 
 m = 1000;%number of keypoints chosen - set high due to bad selection
-boundExpander = 70;
+boundExpander = 20;
 discardNonMovingPoints = 0;
 moveThreshold = 5;
 discardWrongMovements = 1;
@@ -32,25 +32,10 @@ plotKeypoints =0;
 startFrameId = 1;
 
 
-%matching modes within modes 4
-%standard: compute movement vectors and apply them to objRect
-
- % uses detector by David G. Lowe
-useLoweSift = 0;
-
- %move objRect to mean location of matches
- %needs discardNonMovingPoints == 1 and discardWrongMovements == 0
-useMeanLocation = 0;
-
-%%move center of objRect to center of matches
-useCenterOfMatches = 0;
-
-
-
-% Code from http://tracking.cs.princeton.edu/dataset.html
 ptbPath = '../evaluation/ptb/'
-ptbPath = 'C:\Users\12400952\Downloads\EvaluationSet/'
+% ptbPath = 'C:\Users\12400952\Downloads\EvaluationSet/'
 
+% Datasets from Princeton Tracking Benchmark: http://tracking.cs.princeton.edu/dataset.html
 setName = 'face_occ5';
 setName = 'child_no1';
 %setName = 'new_ex_occ4';
@@ -59,22 +44,13 @@ setName = 'child_no1';
 %setName = 'computerbar1';
 %setName = 'toy_yellow_no';%-
 %setName = 'toy_no_occ';
-setName = 'toy_no';%- fast
+% setName = 'toy_no';%- fast
 %setName = 'wdog_no1';%-
 %setName = 'wr_no';
 %setName = 'two_book';
 %setName = 'walking_no_occ'; %-
 
 directory = [ptbPath, setName, '/'];
-
-
-% Dataset from Princeton Tracking Benchmark: http://tracking.cs.princeton.edu/dataset.html
-% setName = 'face_occ5';
-% setName = 'child_no1';
-% setName = 'zcup_move_1';
-% setName = 'bear_front';
-% setName = 'new_ex_occ4';
-
 load([directory 'frames']);  
 
 %K is [fx 0 cx; 0 fy cy; 0 0 1];  
@@ -84,7 +60,7 @@ fx = K(1,1); fy = K(2,2);
 
 numOfFrames = frames.length;  
 imageNames = cell(1,numOfFrames*2);  
-
+svm = train_svm();
 
 counter = 0;
 
@@ -92,8 +68,6 @@ counter = 0;
 result = zeros(numOfFrames,4);
     
 if mode == 4 
-    
-  
     % format: x y w h
     objRect = load([directory 'init.txt']);
     
@@ -103,34 +77,22 @@ if mode == 4
     img = preprocess_image(rgb);
 
     %get first keypoints
-    if useLoweSift == 1
-        [fLast,dLast] = get_loweSift_in_bounds(img,objRect,m);
-    else
-        [fLast,dLast] = get_dsift_in_bound(img,objRect,m);
-    end
+    [fLast,dLast] = get_dsift_in_bound(img,objRect,m);
     
     for frameId = 2:numOfFrames  
       
-         %create expanded rectangle
-        expRect = enlarge_rectangle_pixel(objRect(1), objRect(2), objRect(3),objRect(4), boundExpander);
-    
-           %todo test if expRect still is in img
-           
+        % load and prepare next frame
         imageName = fullfile(directory,sprintf('rgb/r-%d-%d.png', frames.imageTimestamp(frameId), frames.imageFrameID(frameId))) ; 
         rgb = imread(imageName);  
-        % ------------------------------
-        % Start Code kangoroo-tracking group
         fprintf('> processing frame %d\n',frameId)
         img = preprocess_image(rgb);
-    
-       % plot_tmp(img,[],[]);
-  
-        %get keypoints within expRect in current img
-        if useLoweSift == 1
-            [fCurrent,dCurrent] =  get_loweSift_in_bounds(img,expRect,m);
-        else
-             [fCurrent,dCurrent] =  get_dsift_in_bound(img,expRect,m);
-        end
+        
+        % we will compute all the key points in the expanded rectangle in
+        % the new frame
+        expRect = enlarge_rectangle_pixel(objRect(1), objRect(2), objRect(3),objRect(4), boundExpander);
+        expRect = fitToImage(expRect,img);
+        [fCurrent,dCurrent] =  get_dsift_in_bound(img,expRect,m);
+        
         %define array of matching keypoints[xo, xn, yo,yn]
         matches = [];
         
@@ -157,7 +119,8 @@ if mode == 4
                     
                     %calculate euclidian distance
                     euclid = norm(double(dLast(:,kpLastID) - dCurrent(:,kpCurrentID)));
-                    
+%                     [label,scores] = predict(svm,double(dLast(:,kpLastID) - dCurrent(:,kpCurrentID))')
+%                     input('press enter')
                     %new best match?
                     if euclid < bestMatchEuclid
                         bestMatchEuclid = euclid;
@@ -243,30 +206,7 @@ if mode == 4
                 y_mean = mean(y_move);
 
 
-                if useMeanLocation == 1
 
-                    %mean location of key points
-                    meanKeypoint = [mean(X_n); mean(Y_n)];
-
-                    %move objRect
-                    x2 = meanKeypoint(1) - objRect(3)/2;
-                    y2 = meanKeypoint(2) - objRect(4)/2;
-                    w2 = objRect(3);
-                    h2 = objRect(4);
-
-                elseif useCenterOfMatches == 1
-
-                    [newRect(1),newRect(2),newRect(3),newRect(4)] = compute_rectangle(X_n,  Y_n);
-                    newCenterX = newRect(1) + newRect(3)/2;
-                    newCenterY = newRect(2) + newRect(4)/2;
-
-                   %move objRect
-                    x2 = newCenterX - objRect(3)/2;
-                    y2 = newCenterY - objRect(4)/2;
-                    w2 = objRect(3);
-                    h2 = objRect(4);
-
-                else
 
                    fprintf('> %i key points matched \n moving rectangle x %f and y %f\n',numel(x_move),x_mean,y_mean);
                     %move objRect
@@ -274,7 +214,7 @@ if mode == 4
                     y2 = objRect(2)+y_mean;
                     w2 = objRect(3);
                     h2 = objRect(4);
-                end
+         
                 % compute new bounding box for display
                 %  [x2,y2,w2,h2] = compute_rectangle(X_n,Y_n);
                 X = [objRect(1), x2]'; Y = [objRect(2), y2]'; W = [objRect(3), w2]'; H = [objRect(4), h2]';
@@ -322,7 +262,7 @@ else
 
     % XYZcam = zeros(480,640,4,numOfFrames);
 % 
-svm = train_svm();
+
 result = zeros(numOfFrames,4);
 % format: x y w h
 bounds = load([directory 'init.txt']);
