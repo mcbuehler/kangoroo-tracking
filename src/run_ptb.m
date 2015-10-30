@@ -62,8 +62,7 @@ if mode == 4
     discardWrongMovements = 1;
     stopEveryXImage = 0;
     euclidThreshold = 100;
-    useGUI = 0; %not implemented
-    plotKeypoints =0;
+
     global maxKeypointsEuclid
     m = maxKeypointsEuclid%number of keypoints chosen - set high due to bad selection
     
@@ -203,11 +202,7 @@ if mode == 4
             
             % compute new bounding box for display
             X = [objRect(1), x2]'; Y = [objRect(2), y2]'; W = [objRect(3), w2]'; H = [objRect(4), h2]';
-            
-            if plotKeypoints == 1
-                plot_tmp(img,X_n,Y_n);
-            end
-            
+                       
             
             if plot_level == 1
                 draw(rgb,X,Y,W,H);
