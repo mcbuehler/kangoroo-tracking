@@ -306,28 +306,33 @@ elseif mode == 5
         
         % filter aligned points by eliminating supposedly false alignments
         [X_o_accepted,X_n,Y_o_accepted,Y_n] = discard_fp(X_o_accepted,X_n,Y_o_accepted,Y_n);
-        [x_vec,y_vec] = get_avg_movement(X_o_accepted,X_n,Y_o_accepted,Y_n);
         
-        debug('> moving rectangle x %f and y %f\n',[x_vec,y_vec]);
-        
-        % defining new rectangle
-        x2 = bounds(1)+x_vec;
-        y2 = bounds(2)+y_vec;
-        w2 = bounds(3);
-        h2 = bounds(4);
-        rect2 = [x2, y2, w2, h2];
-        
-        if plot_level == 1
-            draw(rgb,[bounds(1);x2],[bounds(2);y2],[bounds(3);w2],[bounds(4);h2]);
-            drawnow
-        elseif plot_level == 2
-            plot_tmp(rgb,X_o_accepted,Y_o_accepted,X_n,Y_n,bounds,rect2);
-            drawnow
-        end
-        
-        if mod(frameId,stopFrame) == 0
-            input(['> Stopped at frame ',num2str(frameId),'. Press enter to continue']);
-            fprintf('> Continuing...\n');
+        if numel(X_n) > 0
+
+            [x_vec,y_vec] = get_avg_movement(X_o_accepted,X_n,Y_o_accepted,Y_n);
+
+            debug('> moving rectangle x %f and y %f\n',[x_vec,y_vec]);
+
+            % defining new rectangle
+            x2 = bounds(1)+x_vec;
+            y2 = bounds(2)+y_vec;
+            w2 = bounds(3);
+            h2 = bounds(4);
+            rect2 = [x2, y2, w2, h2];
+
+            if plot_level == 1
+                draw(rgb,[bounds(1);x2],[bounds(2);y2],[bounds(3);w2],[bounds(4);h2]);
+                drawnow
+            elseif plot_level == 2
+                plot_tmp(rgb,X_o_accepted,Y_o_accepted,X_n,Y_n,bounds,rect2);
+                drawnow
+            end
+
+            if mod(frameId,stopFrame) == 0
+                input(['> Stopped at frame ',num2str(frameId),'. Press enter to continue']);
+                fprintf('> Continuing...\n');
+            end
+
         end
         
         result(frameId,:) = rect2;
