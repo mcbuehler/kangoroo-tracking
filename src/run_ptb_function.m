@@ -164,7 +164,8 @@ if mode == 4
                         %just for correct plotting
                         X_n(i) = [];
                         Y_n(i) = [];
-                        
+                        X_o(i) = [];
+                        Y_o(i) = [];
                         
                         c=c+1;
                         
